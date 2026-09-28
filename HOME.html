@@ -3,114 +3,1272 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>STRUCTLAB — data structure simulator</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<title>STRUCTLAB — Data Structure Laboratory & Interactive Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#141210;--p1:#1b1815;--p2:#242019;--ln:#332f26;--ln2:#4a4436;--ink:#e9e2d0;--mut:#938b73;--acc:#e0a33e;--ok:#83c163;--bad:#d96e57;--teal:#46b3a2}
+:root {
+  --bg: #07090e;
+  --p1: #0e1320;
+  --p2: #141b2d;
+  --p3: #1d273e;
+  --p-glass: rgba(14, 19, 32, 0.82);
+  --p-glass-elevated: rgba(20, 27, 45, 0.75);
+  --ln: rgba(255, 255, 255, 0.08);
+  --ln2: rgba(255, 255, 255, 0.15);
+  --ln-glow: rgba(99, 102, 241, 0.3);
+  --ink: #f8fafc;
+  --ink-muted: #94a3b8;
+  --mut: #8292ab;
+  --mut-dark: #475569;
+  
+  /* Pop Accents */
+  --acc: #6366f1;
+  --acc-glow: #818cf8;
+  --cyan: #38bdf8;
+  --ok: #10b981;
+  --bad: #f43f5e;
+  --cmp: #f59e0b;
+  --vis: #a855f7;
+  --teal: #2dd4bf;
+  --grad-primary: linear-gradient(135deg, #6366f1 0%, #38bdf8 100%);
+  --grad-glow: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(56, 189, 248, 0.15) 100%);
+  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.28);
+}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
-body{background:var(--bg);color:var(--ink);font:14px/1.45 "IBM Plex Sans",sans-serif;overflow:hidden}
-#top{height:52px;display:flex;align-items:center;gap:14px;padding:0 18px;border-bottom:1px solid var(--ln);background:var(--p1)}
-#top .sq{width:14px;height:14px;background:var(--acc)}
-#top h1{font:600 15px "IBM Plex Mono",monospace;letter-spacing:.24em}
-#top .sub{color:var(--mut);font:12px "IBM Plex Mono",monospace}
-#top .cnt{margin-left:auto;color:var(--mut);font:11px "IBM Plex Mono",monospace}
-#cols{display:grid;grid-template-columns:258px 1fr 336px;height:calc(100vh - 52px)}
-#side{border-right:1px solid var(--ln);background:var(--p1);overflow-y:auto}
-#search{width:100%;padding:9px 12px;background:var(--bg);border:0;border-bottom:1px solid var(--ln);color:var(--ink);font:12px "IBM Plex Mono",monospace;outline:none;position:sticky;top:0;z-index:2}
-.cat{padding:10px 14px 4px;font:600 10px "IBM Plex Mono",monospace;letter-spacing:.2em;color:var(--acc);text-transform:uppercase;border-top:1px solid var(--ln);margin-top:6px;display:flex;justify-content:space-between}
-.cat span{color:var(--mut);font-weight:400}
-.it{padding:5px 14px;font:12px/1.3 "IBM Plex Mono",monospace;color:#c9c1ab;cursor:pointer;border-left:2px solid transparent}
-.it:hover{background:var(--p2);color:var(--ink)}
-.it.on{background:var(--p2);color:var(--ink);border-left-color:var(--acc)}
-#mid{overflow-y:auto;padding:16px 22px 30px}
-#dsname{font:600 20px "IBM Plex Mono",monospace}
-#dscat{color:var(--acc);font:10px "IBM Plex Mono",monospace;letter-spacing:.22em;text-transform:uppercase;margin-top:3px}
-#dsblurb{color:var(--mut);font-size:12.5px;max-width:760px;margin-top:7px}
-.cx{display:inline-block;margin:8px 6px 0 0;padding:2px 8px;border:1px solid var(--ln2);border-radius:3px;font:10px "IBM Plex Mono",monospace;color:#c9b458}
-#stage-wrap{margin-top:14px;border:1px solid var(--ln);background:#171512;background-image:radial-gradient(#221e16 1px,transparent 1px);background-size:22px 22px}
-#stage{display:block;width:100%;height:auto;min-height:200px}
-#stage text.t{fill:#e9e2d0;font:13px "IBM Plex Mono",monospace}
-#stage text.m{fill:#938b73;font:10px "IBM Plex Mono",monospace}
-#stage text.h{fill:#938b73;font:600 10px "IBM Plex Mono",monospace;letter-spacing:.15em}
-#stage text.h2{fill:#e9e2d0;font:600 13px "IBM Plex Mono",monospace}
-#stage text.p{fill:#e0a33e;font:600 11px "IBM Plex Mono",monospace}
-#stage text.el{fill:#d8d0ba;font:10px "IBM Plex Mono",monospace;paint-order:stroke;stroke:#171512;stroke-width:3px}
-#opsbar{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
-.opc{background:var(--p1);border:1px solid var(--ln);padding:8px 10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.opc .lbl{font:600 11px "IBM Plex Mono",monospace;color:var(--acc);white-space:nowrap}
-.opc input,.opc select{background:var(--bg);border:1px solid var(--ln);color:var(--ink);font:11px "IBM Plex Mono",monospace;padding:4px 6px;outline:none;width:70px}
-.opc input[type=text]{width:96px}
-.opc .pl{font:9px "IBM Plex Mono",monospace;color:var(--mut)}
-.runb{background:var(--acc);color:#17140f;border:0;padding:5px 12px;font:600 11px "IBM Plex Mono",monospace;cursor:pointer}
-.runb:hover{background:#f0b555}
-.glob{margin-left:auto;display:flex;gap:8px}
-.gb{background:var(--p2);border:1px solid var(--ln2);color:var(--ink);padding:6px 12px;font:11px "IBM Plex Mono",monospace;cursor:pointer}
-.gb:hover{border-color:var(--acc);color:var(--acc)}
-#trace{border-left:1px solid var(--ln);background:var(--p1);display:flex;flex-direction:column}
-#trhead{padding:10px 14px;border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:8px}
-#trhead .t{font:600 11px "IBM Plex Mono",monospace;letter-spacing:.22em;color:var(--acc)}
-#trctl{margin-left:auto;display:flex;gap:4px;align-items:center}
-#trctl button{background:var(--p2);border:1px solid var(--ln2);color:var(--ink);width:28px;height:24px;cursor:pointer;font:10px "IBM Plex Mono",monospace}
-#trctl button:hover{border-color:var(--acc);color:var(--acc)}
-#trctl select{background:var(--p2);border:1px solid var(--ln2);color:var(--ink);font:10px "IBM Plex Mono",monospace}
-#scrub{width:100%;margin:8px 0 2px;accent-color:var(--acc)}
-#steps{flex:1;overflow-y:auto;padding:4px 0;list-style:none}
-.step{padding:5px 14px;font:11px/1.4 "IBM Plex Mono",monospace;color:#b6ae97;cursor:pointer;display:flex;gap:10px;border-left:2px solid transparent}
-.step b{color:var(--mut);font-weight:400;min-width:24px;text-align:right}
-.step:hover{background:var(--p2)}
-.step.on{background:var(--p2);color:var(--ink);border-left-color:var(--acc)}
-.step.on b{color:var(--acc)}
-#status{border-top:1px solid var(--ln);padding:8px 14px;font:10px "IBM Plex Mono",monospace;color:var(--mut);min-height:32px}
-#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--p2);border:1px solid var(--bad);color:var(--ink);padding:8px 16px;font:11px "IBM Plex Mono",monospace;display:none;z-index:9}
-#side::-webkit-scrollbar,#mid::-webkit-scrollbar,#steps::-webkit-scrollbar{width:8px}
-#side::-webkit-scrollbar-thumb,#mid::-webkit-scrollbar-thumb,#steps::-webkit-scrollbar-thumb{background:var(--ln)}
-@media(max-width:1100px){#cols{grid-template-columns:220px 1fr 280px}}
-@media(max-width:860px){body{overflow:auto}#cols{grid-template-columns:1fr;height:auto}#side{max-height:220px}#trace{max-height:340px}}
+body{
+  background: var(--bg);
+  background-image: 
+    radial-gradient(ellipse at 20% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(56, 189, 248, 0.08) 0%, transparent 45%);
+  color: var(--ink);
+  font: 14px/1.5 "Outfit", sans-serif;
+  overflow: hidden;
+  letter-spacing: -0.01em;
+}
+
+/* ================= HEADER ================= */
+#top {
+  height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--ln);
+  background: var(--p-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 20;
+  position: relative;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  cursor: default;
+}
+.brand-logo {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cyan);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.35);
+  animation: logoPulse 4s infinite ease-in-out;
+}
+@keyframes logoPulse {
+  0%, 100% { box-shadow: 0 0 14px rgba(99, 102, 241, 0.3); border-color: rgba(99, 102, 241, 0.4); }
+  50% { box-shadow: 0 0 22px rgba(56, 189, 248, 0.55); border-color: rgba(56, 189, 248, 0.6); }
+}
+.brand-meta h1 {
+  font: 800 16px/1 "Outfit", sans-serif;
+  letter-spacing: 0.12em;
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+.brand-meta h1 .hi {
+  background: var(--grad-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-left: 2px;
+}
+.brand-meta .sub {
+  color: var(--mut);
+  font: 400 11px/1.2 "JetBrains Mono", monospace;
+  margin-top: 2px;
+  letter-spacing: -0.01em;
+}
+
+/* Category Filter Bar in Header */
+.cat-pill-bar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 4px 6px;
+  margin: 0 auto 0 10px;
+  max-width: 600px;
+  scrollbar-width: none;
+}
+.cat-pill-bar::-webkit-scrollbar { display: none; }
+.cpill {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--ln);
+  color: var(--mut);
+  font: 500 11px "Outfit", sans-serif;
+  padding: 4px 10px;
+  border-radius: 100px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.cpill:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink);
+  border-color: var(--ln2);
+}
+.cpill.active {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(56, 189, 248, 0.2) 100%);
+  color: #ffffff;
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+}
+
+.top-meta {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.top-pill-btn {
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: var(--cyan);
+  padding: 5px 12px;
+  border-radius: 8px;
+  font: 600 11.5px "Outfit", sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+.top-pill-btn:hover {
+  background: rgba(99, 102, 241, 0.25);
+  border-color: var(--cyan);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.3);
+  transform: translateY(-1px);
+}
+.top-pill-btn:active { transform: translateY(0); }
+.top-pill-btn .dice-ico { transition: transform 0.4s; display: inline-block; }
+.top-pill-btn:hover .dice-ico { transform: rotate(180deg); }
+
+.counter-badge {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: #34d399;
+  font: 500 11.5px "JetBrains Mono", monospace;
+  padding: 4px 10px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.pulse-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: liveDot 2s infinite;
+}
+@keyframes liveDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* ================= 3-COLUMN WORKSPACE ================= */
+#cols {
+  display: grid;
+  grid-template-columns: 275px 1fr 355px;
+  height: calc(100vh - 58px);
+  background: var(--bg);
+}
+
+/* Left Sidebar */
+#side {
+  border-right: 1px solid var(--ln);
+  background: var(--p1);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.search-box-wrap {
+  padding: 12px 14px;
+  background: var(--p1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--ln);
+}
+.search-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-icon {
+  position: absolute;
+  left: 10px;
+  color: var(--mut);
+  pointer-events: none;
+}
+#search {
+  width: 100%;
+  padding: 8px 32px 8px 30px;
+  background: var(--p2);
+  border: 1px solid var(--ln2);
+  border-radius: 8px;
+  color: var(--ink);
+  font: 12px "JetBrains Mono", monospace;
+  outline: none;
+  transition: all 0.2s;
+}
+#search:focus {
+  border-color: var(--cyan);
+  background: #0f1627;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+}
+#search::placeholder { color: var(--mut); }
+.search-kbd {
+  position: absolute;
+  right: 10px;
+  font: 500 10px "JetBrains Mono", monospace;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--mut);
+  padding: 2px 5px;
+  border-radius: 4px;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.clear-btn {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: var(--mut);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px;
+  display: none;
+}
+.clear-btn:hover { color: #fff; }
+
+.side-content {
+  flex: 1;
+  padding: 6px 0 20px;
+}
+.cat {
+  padding: 10px 14px 6px;
+  font: 700 10.5px "Outfit", sans-serif;
+  letter-spacing: 0.14em;
+  color: var(--cyan);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s;
+  margin-top: 6px;
+}
+.cat:hover { color: #ffffff; }
+.cat-left {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.cat-badge {
+  color: var(--mut);
+  font: 500 10px "JetBrains Mono", monospace;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1px 6px;
+  border-radius: 100px;
+  border: 1px solid var(--ln);
+}
+.cat-arrow {
+  color: var(--mut);
+  font-size: 9px;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cat.collapsed .cat-arrow {
+  transform: rotate(-90deg);
+}
+
+.it-group {
+  overflow: hidden;
+  transition: max-height 0.25s ease-in-out;
+}
+.it {
+  padding: 6px 14px 6px 16px;
+  font: 400 12px/1.35 "Outfit", sans-serif;
+  color: var(--ink-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border-left: 2px solid transparent;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.it-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--mut);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.it:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ink);
+  transform: translateX(3px);
+}
+.it:hover .it-dot {
+  background: var(--cyan);
+  box-shadow: 0 0 6px var(--cyan);
+}
+.it.on {
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.18) 0%, rgba(56, 189, 248, 0.04) 100%);
+  color: #ffffff;
+  font-weight: 600;
+  border-left-color: var(--cyan);
+}
+.it.on .it-dot {
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  transform: scale(1.3);
+}
+
+/* ================= CENTER WORKSPACE ================= */
+#mid {
+  overflow-y: auto;
+  padding: 20px 28px 36px;
+  background: radial-gradient(ellipse at 50% 10%, rgba(30, 41, 67, 0.35) 0%, transparent 60%);
+  display: flex;
+  flex-direction: column;
+}
+.mid-header {
+  animation: enterFade 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes enterFade {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+#dsname {
+  font: 800 24px/1.2 "Outfit", sans-serif;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+#dscat {
+  color: var(--cyan);
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  font: 600 10.5px "JetBrains Mono", monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 6px;
+}
+#dsblurb {
+  color: var(--ink-muted);
+  font: 400 13px/1.6 "Outfit", sans-serif;
+  max-width: 820px;
+  margin-top: 8px;
+}
+#cxrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.cx {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  background: rgba(245, 158, 11, 0.08);
+  border-radius: 5px;
+  font: 500 11px "JetBrains Mono", monospace;
+  color: #fcd34d;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Interactive Canvas Stage */
+#stage-wrap {
+  margin-top: 18px;
+  border: 1px solid var(--ln2);
+  border-radius: 12px;
+  background: #090e18;
+  background-image: 
+    radial-gradient(circle at 50% 40%, rgba(30, 41, 59, 0.45) 0%, rgba(9, 14, 24, 0.95) 75%),
+    linear-gradient(rgba(56, 189, 248, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.035) 1px, transparent 1px);
+  background-size: 100% 100%, 24px 24px, 24px 24px;
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.7), inset 0 0 40px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#stage-wrap.active-op {
+  border-color: rgba(56, 189, 248, 0.55);
+  box-shadow: 0 0 35px rgba(56, 189, 248, 0.25), inset 0 0 30px rgba(56, 189, 248, 0.08);
+}
+#stage {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 220px;
+  transition: all 0.2s;
+}
+
+/* SVG Typography & Elements */
+#stage text.t { fill: #f8fafc; font: 500 13px "JetBrains Mono", monospace; }
+#stage text.t.t-hot { fill: #ffffff; font-weight: 700; }
+#stage text.m { fill: #8292ab; font: 400 10.5px "JetBrains Mono", monospace; }
+#stage text.h { fill: #94a3b8; font: 600 11px "Outfit", sans-serif; letter-spacing: 0.14em; text-transform: uppercase; }
+#stage text.h2 { fill: #f8fafc; font: 700 14px "Outfit", sans-serif; }
+#stage text.p {
+  fill: #38bdf8;
+  font: 700 11.5px "JetBrains Mono", monospace;
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.7));
+  animation: pointerBounce 1.4s ease-in-out infinite;
+}
+@keyframes pointerBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+#stage text.el { fill: #cbd5e1; font: 500 10px "JetBrains Mono", monospace; paint-order: stroke; stroke: #090e18; stroke-width: 3.5px; }
+
+/* SVG Node Pulse & High-Tech Ripple Waves */
+@keyframes svgPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px currentColor);
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 14px currentColor) drop-shadow(0 0 24px currentColor);
+    transform: scale(1.035);
+  }
+}
+.svg-node-hot {
+  animation: svgPulse 1.3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes rippleCirc {
+  0% { transform: scale(0.85); opacity: 0.9; stroke-width: 2.5px; }
+  100% { transform: scale(1.65); opacity: 0; stroke-width: 0.5px; }
+}
+.svg-ripple-circ {
+  transform-origin: center;
+  animation: rippleCirc 1s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes rippleBox {
+  0% { transform: scale(0.96); opacity: 0.9; stroke-width: 2.5px; }
+  100% { transform: scale(1.35); opacity: 0; stroke-width: 0.5px; }
+}
+.svg-ripple-box {
+  transform-origin: center;
+  animation: rippleBox 1s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  pointer-events: none;
+}
+
+/* Edge Laser Flow */
+@keyframes edgeLaserFlow {
+  from { stroke-dashoffset: 28; }
+  to { stroke-dashoffset: 0; }
+}
+.svg-edge-hot {
+  stroke-dasharray: 8 4;
+  animation: edgeLaserFlow 0.75s linear infinite;
+  filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 12px currentColor);
+}
+
+/* Laser Scanline on Canvas */
+.stage-scanline {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.8) 50%, transparent 100%);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.7);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+  transition: opacity 0.3s;
+}
+#stage-wrap.playing .stage-scanline {
+  opacity: 1;
+  animation: scanSweep 2.8s linear infinite;
+}
+@keyframes scanSweep {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(320px); }
+}
+
+
+/* ================= ALGORITHM EXECUTION HUD ================= */
+#algo-hud {
+  margin-top: 10px;
+  background: var(--p-glass-elevated);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--ln2);
+  border-radius: 9px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s;
+}
+#algo-hud:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 6px 22px rgba(56, 189, 248, 0.15);
+}
+.hud-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 800 10.5px "Outfit", sans-serif;
+  letter-spacing: 0.14em;
+  color: var(--cyan);
+  text-transform: uppercase;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  padding: 3px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.hud-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  animation: liveDot 1.2s infinite;
+}
+.hud-name {
+  font: 700 12.5px "Outfit", sans-serif;
+  color: #ffffff;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+.hud-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--ln2);
+}
+.hud-exec {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.hud-exec-icon {
+  color: var(--cyan);
+  font-size: 11px;
+  animation: pointerBounce 1s infinite;
+}
+.hud-line-num {
+  font: 700 10.5px "JetBrains Mono", monospace;
+  color: var(--cyan);
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.hud-code {
+  font: 500 12px "JetBrains Mono", monospace;
+  color: #e2e8f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hud-badge {
+  margin-left: auto;
+  font: 600 11px "JetBrains Mono", monospace;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  padding: 2px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+/* ================= TRACE TABS & ALGORITHM PANE ================= */
+.trace-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--ln);
+  background: #080c14;
+}
+.tr-tab {
+  flex: 1;
+  padding: 9px 8px;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--ink-muted);
+  font: 600 11px "Outfit", sans-serif;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+.tr-tab:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.03);
+}
+.tr-tab.active {
+  color: var(--cyan);
+  border-bottom-color: var(--cyan);
+  background: rgba(56, 189, 248, 0.08);
+  font-weight: 700;
+}
+
+#algoPane {
+  display: flex;
+  flex-direction: column;
+  background: #090e18;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+#trace.mode-split #algoPane {
+  max-height: 290px;
+  border-bottom: 1px solid var(--ln);
+  flex-shrink: 0;
+}
+#trace.mode-algo #algoPane {
+  flex: 1;
+  max-height: none;
+}
+#trace.mode-steps #algoPane {
+  display: none;
+}
+
+#tracePane {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+#trace.mode-algo #tracePane {
+  display: none;
+}
+#trace.mode-steps #tracePane {
+  flex: 1;
+}
+#trace.mode-split #tracePane {
+  flex: 1;
+}
+
+.algo-header {
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid var(--ln2);
+  background: var(--p-glass);
+}
+.algo-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.algo-title {
+  font: 700 12px "Outfit", sans-serif;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+}
+.algo-cx {
+  font: 600 10.5px "JetBrains Mono", monospace;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.algo-invariant {
+  margin-top: 4px;
+  font: 400 10.5px/1.4 "Outfit", sans-serif;
+  color: var(--mut);
+}
+
+.algo-code-block {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 6px;
+  font: 400 11.5px/1.55 "JetBrains Mono", monospace;
+  background: #070a12;
+}
+.algo-line {
+  display: flex;
+  align-items: baseline;
+  padding: 2.5px 8px;
+  border-radius: 4px;
+  border-left: 2.5px solid transparent;
+  color: #94a3b8;
+  transition: all 0.15s;
+  cursor: pointer;
+}
+.algo-line:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: #f1f5f9;
+}
+.algo-line.active {
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.22) 0%, rgba(99, 102, 241, 0.06) 100%);
+  border-left-color: var(--cyan);
+  color: #ffffff;
+  box-shadow: inset 0 0 16px rgba(56, 189, 248, 0.12);
+}
+.algo-ln {
+  min-width: 24px;
+  color: #475569;
+  font-size: 10px;
+  user-select: none;
+  text-align: right;
+  margin-right: 8px;
+}
+.algo-line.active .algo-ln {
+  color: var(--cyan);
+  font-weight: 700;
+}
+.algo-arrow {
+  display: inline-block;
+  width: 14px;
+  font-size: 9px;
+  color: transparent;
+  user-select: none;
+  transition: all 0.15s;
+}
+.algo-line.active .algo-arrow {
+  color: var(--cyan);
+  animation: pointerBounce 1s infinite;
+}
+.algo-txt {
+  flex: 1;
+  white-space: pre;
+}
+
+/* Syntax Highlighting */
+.algo-txt .kw { color: #c084fc; font-weight: 600; }
+.algo-txt .fn { color: #38bdf8; }
+.algo-txt .ty { color: #f43f5e; }
+.algo-txt .num { color: #fbbf24; }
+.algo-txt .cm { color: #64748b; font-style: italic; }
+
+.algo-commentary {
+  padding: 8px 12px;
+  border-top: 1px solid var(--ln2);
+  background: rgba(14, 19, 32, 0.8);
+  font: 500 11px/1.45 "JetBrains Mono", monospace;
+  color: #38bdf8;
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.algo-commentary-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 6px var(--cyan);
+  flex-shrink: 0;
+}
+
+/* ================= OPERATIONS BAR ================= */
+#opsbar {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: stretch;
+}
+.opc {
+  background: var(--p-glass-elevated);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--ln2);
+  border-radius: 9px;
+  padding: 9px 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  transition: all 0.2s;
+}
+.opc:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+.opc .lbl {
+  font: 700 11.5px "JetBrains Mono", monospace;
+  color: var(--cyan);
+  white-space: nowrap;
+}
+.opc input, .opc select {
+  background: #080c14;
+  border: 1px solid var(--ln2);
+  border-radius: 6px;
+  color: var(--ink);
+  font: 500 11px "JetBrains Mono", monospace;
+  padding: 5px 8px;
+  outline: none;
+  width: 72px;
+  transition: all 0.2s;
+}
+.opc input[type=text] { width: 105px; }
+.opc input:focus, .opc select:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+  background: #0d1424;
+}
+.opc .pl {
+  font: 400 10px "Outfit", sans-serif;
+  color: var(--mut);
+}
+
+.runb {
+  background: var(--grad-primary);
+  color: #ffffff;
+  border: 0;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font: 700 11px "Outfit", sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.runb:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(56, 189, 248, 0.55);
+  filter: brightness(1.1);
+}
+.runb:active { transform: translateY(1px); }
+
+.glob {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+.gb {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid var(--ln2);
+  color: var(--ink-muted);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font: 600 11px "Outfit", sans-serif;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s;
+}
+.gb:hover {
+  border-color: var(--cyan);
+  color: #ffffff;
+  background: rgba(56, 189, 248, 0.12);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+}
+
+/* ================= RIGHT TRACE PANEL ================= */
+#trace {
+  border-left: 1px solid var(--ln);
+  background: var(--p1);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+#trhead {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--ln);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--p-glass);
+}
+.tr-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tr-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+}
+#trhead .t {
+  font: 800 12px "Outfit", sans-serif;
+  letter-spacing: 0.15em;
+  color: #ffffff;
+}
+.tr-badge {
+  font: 500 10px "JetBrains Mono", monospace;
+  color: var(--mut);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+#trctl {
+  margin-left: auto;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+#trctl button {
+  background: var(--p2);
+  border: 1px solid var(--ln2);
+  color: var(--ink);
+  width: 30px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  font: 600 11px "JetBrains Mono", monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+#trctl button:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: rgba(56, 189, 248, 0.12);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+#trctl button.btn-play.playing {
+  background: var(--grad-primary);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 0 14px rgba(99, 102, 241, 0.5);
+  animation: playPulse 1.5s infinite;
+}
+@keyframes playPulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(99, 102, 241, 0.4); }
+  50% { box-shadow: 0 0 18px rgba(56, 189, 248, 0.7); }
+}
+#trctl select {
+  background: var(--p2);
+  border: 1px solid var(--ln2);
+  border-radius: 6px;
+  color: var(--ink);
+  padding: 3px 6px;
+  font: 500 10.5px "JetBrains Mono", monospace;
+  outline: none;
+}
+
+.scrub-container {
+  padding: 10px 16px 4px;
+}
+#scrub {
+  width: 100%;
+  accent-color: var(--cyan);
+  cursor: pointer;
+  height: 5px;
+  border-radius: 100px;
+}
+
+#steps {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 8px;
+  list-style: none;
+}
+.step {
+  padding: 7px 12px;
+  font: 400 11.5px/1.45 "JetBrains Mono", monospace;
+  color: var(--ink-muted);
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  border-left: 2.5px solid transparent;
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 2px;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.step b {
+  color: var(--mut);
+  font-weight: 600;
+  min-width: 26px;
+  text-align: right;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+.step:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+  transform: translateX(2px);
+}
+.step.on {
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.15) 0%, rgba(99, 102, 241, 0.04) 100%);
+  color: #ffffff;
+  border-left-color: var(--cyan);
+  box-shadow: inset 0 0 14px rgba(56, 189, 248, 0.12);
+}
+.step.on b {
+  color: #07090e;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+}
+
+#status {
+  border-top: 1px solid var(--ln);
+  padding: 10px 16px;
+  font: 500 11px "JetBrains Mono", monospace;
+  color: var(--mut);
+  min-height: 38px;
+  background: var(--p-glass);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+.status-dot.busy {
+  background: #f59e0b;
+  box-shadow: 0 0 8px #f59e0b;
+  animation: liveDot 1s infinite;
+}
+
+/* ================= TOAST ================= */
+#toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(14, 19, 32, 0.95);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--bad);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(244, 63, 94, 0.35);
+  color: #ffffff;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font: 500 12px "JetBrains Mono", monospace;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100;
+}
+#toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.toast-icon { color: var(--bad); }
+
+/* Scrollbars */
+#side::-webkit-scrollbar, #mid::-webkit-scrollbar, #steps::-webkit-scrollbar { width: 6px; }
+#side::-webkit-scrollbar-thumb, #mid::-webkit-scrollbar-thumb, #steps::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+}
+#side::-webkit-scrollbar-thumb:hover, #mid::-webkit-scrollbar-thumb:hover, #steps::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+@media(max-width: 1100px) {
+  #cols { grid-template-columns: 240px 1fr 290px; }
+  .cat-pill-bar { display: none; }
+}
+@media(max-width: 860px) {
+  body { overflow: auto; }
+  #cols { grid-template-columns: 1fr; height: auto; }
+  #side { max-height: 250px; }
+  #trace { max-height: 360px; }
+}
 </style>
 </head>
 <body>
-<header id="top"><div class="sq"></div><h1>STRUCTLAB</h1><div class="sub">interactive data-structure laboratory</div><div class="cnt" id="topcnt"></div></header>
-<div id="cols">
-<aside id="side"><input id="search" placeholder="filter structures…"></aside>
-<main id="mid">
-  <h2 id="dsname"></h2><div id="dscat"></div><p id="dsblurb"></p><div id="cxrow"></div>
-  <div id="stage-wrap"><svg id="stage" viewBox="0 0 960 300"></svg></div>
-  <div id="opsbar"></div>
-</main>
-<aside id="trace">
-  <div id="trhead"><span class="t">TRACE</span>
-    <div id="trctl">
-      <select id="spd"><option value="1500">0.25×</option><option value="520" selected>1×</option><option value="160">4×</option><option value="0">instant</option></select>
-      <button id="bprev">◂</button><button id="bplay">▶</button><button id="bnext">▸</button>
+<header id="top">
+  <div class="brand">
+    <div class="brand-logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+        <polyline points="2 17 12 22 22 17"></polyline>
+        <polyline points="2 12 12 17 22 12"></polyline>
+      </svg>
+    </div>
+    <div class="brand-meta">
+      <h1>STRUCT<span class="hi">LAB</span></h1>
+      <div class="sub">interactive data-structure laboratory</div>
     </div>
   </div>
-  <input type="range" id="scrub" min="0" max="0" value="0">
-  <ol id="steps"></ol>
-  <div id="status"></div>
-</aside>
+
+  <div class="cat-pill-bar" id="catBar"></div>
+
+  <div class="top-meta">
+    <button id="btnSurprise" class="top-pill-btn" title="Jump to a random structure">
+      <span class="dice-ico">🎲</span> <span>Surprise Me</span>
+    </button>
+    <div class="counter-badge" title="Active structures">
+      <span class="pulse-indicator"></span>
+      <span id="topcnt">0 structures</span>
+    </div>
+  </div>
+</header>
+<div id="cols">
+  <aside id="side">
+    <div class="search-box-wrap">
+      <div class="search-inner">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="search" placeholder="Filter structures ( / )..." autocomplete="off" spellcheck="false">
+        <span class="search-kbd">/</span>
+        <button id="clearSearch" class="clear-btn" title="Clear search">✕</button>
+      </div>
+    </div>
+    <div id="sideContent" class="side-content"></div>
+  </aside>
+  <main id="mid">
+    <div class="mid-header">
+      <div class="title-row">
+        <h2 id="dsname"></h2>
+        <span id="dscat"></span>
+      </div>
+      <p id="dsblurb"></p>
+      <div id="cxrow"></div>
+    </div>
+    <div id="stage-wrap">
+      <div class="stage-scanline"></div>
+      <svg id="stage" viewBox="0 0 960 300"></svg>
+    </div>
+    <div id="opsbar"></div>
+  </main>
+  <aside id="trace" class="mode-split">
+    <div class="trace-tabs" id="traceTabs">
+      <button class="tr-tab active" data-tab="split" title="Split View: Algorithm + Trace">⚡ Split</button>
+      <button class="tr-tab" data-tab="algo" title="Algorithm Pseudocode">⌨ Code</button>
+      <button class="tr-tab" data-tab="steps" title="Execution Steps Log">📜 Trace</button>
+    </div>
+    <div id="algoPane">
+      <div class="algo-header">
+        <div class="algo-title-row">
+          <span id="algoTitle" class="algo-title">Algorithm</span>
+          <span id="algoComplexity" class="algo-cx">O(1)</span>
+        </div>
+        <div id="algoInvariant" class="algo-invariant"></div>
+      </div>
+      <div id="algoCode" class="algo-code-block"></div>
+      <div id="algoCommentary" class="algo-commentary">
+        <span class="algo-commentary-dot"></span>
+        <span id="algoCommentaryText">Initial state loaded</span>
+      </div>
+    </div>
+    <div id="tracePane">
+      <div id="trhead">
+        <div class="tr-title">
+          <span class="tr-dot"></span>
+          <span class="t">TRACE</span>
+          <span id="trCounter" class="tr-badge">0 / 0</span>
+        </div>
+        <div id="trctl">
+          <select id="spd" title="Playback speed">
+            <option value="1500">0.25×</option>
+            <option value="800">0.5×</option>
+            <option value="420" selected>1×</option>
+            <option value="200">2×</option>
+            <option value="80">4×</option>
+            <option value="0">instant</option>
+          </select>
+          <button id="bprev" title="Previous step (Left Arrow)">◂</button>
+          <button id="bplay" class="btn-play" title="Play / Pause (Space)">▶</button>
+          <button id="bnext" title="Next step (Right Arrow)">▸</button>
+        </div>
+      </div>
+      <div class="scrub-container">
+        <input type="range" id="scrub" min="0" max="0" value="0">
+      </div>
+      <ol id="steps"></ol>
+    </div>
+    <div id="status">
+      <span class="status-dot"></span>
+      <span id="statusText">Ready</span>
+    </div>
+  </aside>
 </div>
-<div id="toast"></div>
+<div id="toast"><span class="toast-icon">⚡</span><span id="toastMsg"></span></div>
 <script>
 "use strict";
 /* ================= CORE ================= */
 const NS='http://www.w3.org/2000/svg';
 const stage=document.getElementById('stage');
-const PC={cur:'#e0a33e',vis:'#46b3a2',ok:'#83c163',bad:'#d96e57',cmp:'#c9b458'};
+const PC={cur:'#38bdf8',vis:'#a855f7',ok:'#10b981',bad:'#f43f5e',cmp:'#f59e0b'};
 (function(){const d=document.createElementNS(NS,'defs');
-  [['arA','#e0a33e'],['arI','#6a6353'],['arT','#46b3a2']].forEach(p=>{
+  [['arA','#38bdf8'],['arI','#475569'],['arT','#2dd4bf'],['arOk','#10b981'],['arBad','#f43f5e'],['arVis','#a855f7']].forEach(p=>{
     const m=document.createElementNS(NS,'marker');m.setAttribute('id',p[0]);m.setAttribute('viewBox','0 0 10 10');m.setAttribute('refX',9);m.setAttribute('refY',5);m.setAttribute('markerWidth',7);m.setAttribute('markerHeight',7);m.setAttribute('orient','auto-start-reverse');
     const pa=document.createElementNS(NS,'path');pa.setAttribute('d','M0 0 L10 5 L0 10 z');pa.setAttribute('fill',p[1]);m.appendChild(pa);d.appendChild(m);});
   stage.appendChild(d);})();
 const G=document.createElementNS(NS,'g');stage.appendChild(G);
 function E(tag,at){const n=document.createElementNS(NS,tag);for(const k in at)n.setAttribute(k,at[k]);G.appendChild(n);return n;}
 function TX(x,y,s,cls,anc){const t=E('text',{x:x,y:y,'text-anchor':anc||'middle','class':cls||'t'});t.textContent=String(s);return t;}
-function LN(x1,y1,x2,y2,o){o=o||{};E('line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:o.c||'#4a4436','stroke-width':o.w||1.3,'stroke-dasharray':o.dash||'none',...(o.mk?{'marker-end':'url(#'+o.mk+')'}:{})});}
+function LN(x1,y1,x2,y2,o){o=o||{};return E('line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:o.c||'#26344d','stroke-width':o.w||1.4,'stroke-dasharray':o.dash||'none',...(o.mk?{'marker-end':'url(#'+o.mk+')'}:{})});}
 function fmt(v){if(v===null||v===undefined)return'·';if(typeof v==='number')return Math.round(v*1000)/1000+'';return String(v);}
 function cell(x,y,w,hh,val,col,sub,small){
-  E('rect',{x:x,y:y,width:w,height:hh,rx:3,fill:col?col+'22':'#211e17',stroke:col||'#453f31','stroke-width':col?1.9:1});
-  if(val!==null&&val!==undefined)TX(x+w/2,y+hh/2+(small?3:4),fmt(val),'t');
-  if(sub!=null)TX(x+w/2,y+hh+12,sub,'m');
+  const hot=!!col;
+  if(hot){
+    const rip=E('rect',{x:x-3,y:y-3,width:w+6,height:hh+6,rx:8,fill:'none',stroke:col,'stroke-width':2,class:'svg-ripple-box'});
+    rip.style.color=col;
+  }
+  const r=E('rect',{x:x,y:y,width:w,height:hh,rx:6,fill:col?col+'35':'#101626',stroke:col||'#26344d','stroke-width':col?2.4:1.2,class:hot?'svg-node-hot':'svg-node'});
+  if(hot)r.style.color=col;
+  if(val!==null&&val!==undefined){const t=TX(x+w/2,y+hh/2+(small?3:4),fmt(val),'t'+(hot?' t-hot':''));if(hot)t.style.fill='#ffffff';}
+  if(sub!=null)TX(x+w/2,y+hh+13,sub,'m');
 }
 /* ---- view engines ---- */
 const ENG={
@@ -121,13 +1279,13 @@ row(d,hl,y,id){
   for(let i=0;i<cap;i++){
     const col=hl[id+':'+i]?PC[hl[id+':'+i]]:null;
     if(i<d.a.length)cell(x0+i*(w+gap),y,w,hh,d.a[i],col,d.subs?d.subs[i]:null,w<=36);
-    else{E('rect',{x:x0+i*(w+gap),y:y,width:w,height:hh,rx:3,fill:'none',stroke:'#39352b','stroke-dasharray':'4 4'});TX(x0+i*(w+gap)+w/2,y+hh/2+4,'·','m');}
+    else{E('rect',{x:x0+i*(w+gap),y:y,width:w,height:hh,rx:6,fill:'none',stroke:'rgba(255,255,255,0.08)','stroke-dasharray':'4 4'});TX(x0+i*(w+gap)+w/2,y+hh/2+4,'·','m');}
   }
   let extra=6;
   if(d.subs)extra+=14;
   if(d.ptr){for(const nm in d.ptr){const i=d.ptr[nm];if(i==null||i<0||i>=cap)continue;
     const px=x0+i*(w+gap)+w/2,py=y+hh+(d.subs?26:16);
-    E('path',{d:'M'+px+' '+py+' l-5 8 h10 z',fill:PC.cur});TX(px,py+26,nm,'p');}extra+=46;}
+    const pth=E('path',{d:'M'+px+' '+py+' l-5 8 h10 z',fill:PC.cur,class:'svg-node-hot'});pth.style.color=PC.cur;TX(px,py+26,nm,'p');}extra+=46;}
   return hh+extra;
 },
 ring(d,hl,y,id){
@@ -140,20 +1298,25 @@ ring(d,hl,y,id){
   }
   if(d.ptr)for(const nm in d.ptr){const i=d.ptr[nm];if(i==null||i<0||i>=cap)continue;
     const a=-Math.PI/2+i*2*Math.PI/cap;
-    LN(cx+(R-54)*Math.cos(a),cy+(R-54)*Math.sin(a),cx+(R-36)*Math.cos(a),cy+(R-36)*Math.sin(a),{c:PC.cur,w:1.6,mk:'arA'});
+    const eline=LN(cx+(R-54)*Math.cos(a),cy+(R-54)*Math.sin(a),cx+(R-36)*Math.cos(a),cy+(R-36)*Math.sin(a),{c:PC.cur,w:1.8,mk:'arA'});
+    if(eline){eline.classList.add('svg-edge-hot');eline.style.color=PC.cur;}
     TX(cx+(R-88)*Math.cos(a),cy+(R-88)*Math.sin(a),nm,'p');}
   if(d.center)TX(cx,cy,d.center,'p');
   return 2*R+80;
 },
 grid(d,hl,y,id){
-  const g=d.g,rows=g.length,cols=g[0].length,cw=d.cw||56,chh=d.chh||38;
+  const g=d.g||[],rows=g.length;
+  if(!rows||!g[0])return 24;
+  const cols=g[0].length,cw=d.cw||56,chh=d.chh||38;
   const x0=(960-cols*cw)/2,y0=y+(d.head?22:0);
   if(d.head)for(let c=0;c<cols;c++)TX(x0+c*cw+(cw-2)/2,y+12,d.head[c],'h');
   for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
     const col=hl[id+':'+r+','+c]?PC[hl[id+':'+r+','+c]]:null;
     const band=d.band?d.band[r]:null;
-    E('rect',{x:x0+c*cw,y:y0+r*chh,width:cw-2,height:chh-2,rx:3,fill:col?col+'22':(band?band+'16':'#211e17'),stroke:col||'#453f31','stroke-width':col?1.9:1});
-    TX(x0+c*cw+(cw-2)/2,y0+r*chh+chh/2+3,fmt(g[r][c]),'t');
+    const rect=E('rect',{x:x0+c*cw,y:y0+r*chh,width:cw-2,height:chh-2,rx:5,fill:col?col+'30':(band?band+'16':'#101626'),stroke:col||'#26344d','stroke-width':col?2.4:1.2,class:col?'svg-node-hot':'svg-node'});
+    if(col)rect.style.color=col;
+    const t=TX(x0+c*cw+(cw-2)/2,y0+r*chh+chh/2+3,fmt(g[r][c]),'t'+(col?' t-hot':''));
+    if(col)t.style.fill='#ffffff';
   }
   if(d.rhead)for(let r=0;r<rows;r++)TX(x0-16,y0+r*chh+chh/2+3,d.rhead[r],'m');
   return rows*chh+(d.head?22:0)+8;
@@ -163,7 +1326,7 @@ stack(d,hl,y,id){
   const yb=y+n*(hh+gap);
   for(let i=0;i<n;i++){const col=hl[id+':'+i]?PC[hl[id+':'+i]]:null;
     cell(x,yb-(i+1)*(hh+gap)+gap,w,hh,d.a[i],col,null);}
-  if(n)TX(x+w+14,yb-n*(hh+gap)+gap+hh/2,'top','p');
+  if(n)TX(x+w+16,yb-n*(hh+gap)+gap+hh/2,'top','p');
   TX(480,yb+16,d.label||'','h');
   return n*(hh+gap)+30;
 },
@@ -176,29 +1339,35 @@ list(d,hl,y,id){
     const col=hl[id+':'+i]?PC[hl[id+':'+i]]:null;
     cell(x0+i*(w+gap),y,w,36,d.L[i].v,col,d.L[i].sub);
     if(i<n-1){
-      LN(x0+i*(w+gap)+w+2,y+13,x0+(i+1)*(w+gap)-4,y+13,{c:'#6a6353',w:1.4,mk:'arI'});
-      if(d.dbl)LN(x0+(i+1)*(w+gap)-4,y+26,x0+i*(w+gap)+w+2,y+26,{c:'#4a4436',w:1.1,mk:'arI'});
+      const l1=LN(x0+i*(w+gap)+w+2,y+13,x0+(i+1)*(w+gap)-4,y+13,{c:'#3b4a6b',w:1.5,mk:'arI'});
+      if(d.dbl){LN(x0+(i+1)*(w+gap)-4,y+26,x0+i*(w+gap)+w+2,y+26,{c:'#26344d',w:1.2,mk:'arI'});}
     }}
   if(d.circ&&n>1){const xr=x0+(n-1)*(w+gap)+w/2;
-    E('path',{d:'M'+xr+' '+(y+38)+' C '+xr+' '+(y+88)+' '+(x0+w/2)+' '+(y+88)+' '+(x0+w/2)+' '+(y+42),fill:'none',stroke:'#6a6353','stroke-width':1.4,'marker-end':'url(#arI)'});
+    E('path',{d:'M'+xr+' '+(y+38)+' C '+xr+' '+(y+88)+' '+(x0+w/2)+' '+(y+88)+' '+(x0+w/2)+' '+(y+42),fill:'none',stroke:'#3b4a6b','stroke-width':1.5,'marker-end':'url(#arI)'});
     TX(480,y+98,'tail loops back to head','m');return 104;}
   return 62;
 },
 tree(d,hl,y,id){
   const nd=d.nd,roots=Array.isArray(d.rt)?d.rt:(d.rt!=null?[d.rt]:[]);
   if(!roots.length||!nd[roots[0]]){TX(480,y+24,'(empty)','m');return 44;}
-  const K={};for(const k in nd)K[k]=(nd[k].kids||[]).filter(c=>c!=null&&nd[c]);
+  const K={};
+  for(const k in nd){
+    const raw=Array.isArray(nd[k].kids)?nd[k].kids:Object.values(nd[k].kids||{});
+    K[k]=raw.filter(c=>c!=null&&nd[c]);
+  }
   const X={},Y={},W={};let cur=0;
   const gw=d.gw||44,gh=d.gh||32;
-  (function meas(r){const ks=K[r];
+  const visM=new Set();
+  roots.forEach(function meas(r){
+    if(visM.has(r))return;visM.add(r);
+    const ks=K[r]||[];
     W[r]=Math.max(gw,String(nd[r].v==null?'':nd[r].v).length*8.5+16);
     if(!ks.length){X[r]=cur+W[r]/2;cur+=W[r]+14;}
-    else{ks.forEach(meas);const xs=ks.map(k=>X[k]);X[r]=(Math.min.apply(null,xs)+Math.max.apply(null,xs))/2;}})&&0;
-  roots.forEach(function meas(r){const ks=K[r];
-    W[r]=Math.max(gw,String(nd[r].v==null?'':nd[r].v).length*8.5+16);
-    if(!ks.length){X[r]=cur+W[r]/2;cur+=W[r]+14;}
-    else{ks.forEach(meas);const xs=ks.map(k=>X[k]);X[r]=(Math.min.apply(null,xs)+Math.max.apply(null,xs))/2;}});
-  roots.forEach(function dep(r){Y[r]=0;(function go(i){K[i].forEach(k=>{Y[k]=Y[i]+1;go(k);});})(r);});
+    else{ks.forEach(meas);const xs=ks.map(k=>X[k]||cur);X[r]=(Math.min.apply(null,xs)+Math.max.apply(null,xs))/2;}});
+  const visD=new Set();
+  roots.forEach(function dep(r){Y[r]=0;(function go(i){
+    if(visD.has(i))return;visD.add(i);
+    (K[i]||[]).forEach(k=>{Y[k]=(Y[i]||0)+1;go(k);});})(r);});
   let maxD=0;for(const k in Y)maxD=Math.max(maxD,Y[k]);
   const vgap=d.vgap||76,natW=Math.max(1,cur-14);
   const xA=d.x0!=null?d.x0:20,xB=d.x1!=null?d.x1:940;
@@ -206,14 +1375,29 @@ tree(d,hl,y,id){
   const PX=r=>ox+X[r]*sx,PY=r=>y+16+Y[r]*vgap;
   for(const pid in nd){K[pid].forEach(k=>{
     const hot=hl[id+':e'+k];
-    LN(PX(pid),PY(pid)+gh/2,PX(k),PY(k)-gh/2,{c:hot?PC[hot]:'#4a4436',w:hot?2.4:1.3});
+    const eline=LN(PX(pid),PY(pid)+gh/2,PX(k),PY(k)-gh/2,{c:hot?PC[hot]:'#26344d',w:hot?2.6:1.3});
+    if(hot&&eline){eline.classList.add('svg-edge-hot');eline.style.color=PC[hot];}
     if(nd[k].eb!=null)TX((PX(pid)+PX(k))/2,(PY(pid)+PY(k))/2-5,nd[k].eb,'el');});}
   for(const nid in nd){
     const n=nd[nid],col=hl[id+':'+nid]?PC[hl[id+':'+nid]]:null;
-    if(n.thr!=null&&nd[n.thr])LN(PX(nid),PY(nid),PX(n.thr),PY(n.thr),{c:'#4a4436',w:1,dash:'3 4'});
-    if(n.circ)E('circle',{cx:PX(nid),cy:PY(nid),r:gh/2+4,fill:col?col+'22':(n.fill||'#211e17'),stroke:col||n.stroke||'#4d4738','stroke-width':col?2:1.4});
-    else E('rect',{x:PX(nid)-gw/2,y:PY(nid)-gh/2,width:gw,height:gh,rx:4,fill:col?col+'22':(n.fill||'#211e17'),stroke:col||n.stroke||'#4d4738','stroke-width':col?2:1.2});
-    TX(PX(nid),PY(nid)+4,n.v,'t');
+    if(n.thr!=null&&nd[n.thr])LN(PX(nid),PY(nid),PX(n.thr),PY(n.thr),{c:'#26344d',w:1,dash:'3 4'});
+    if(n.circ){
+      if(col){
+        const rip=E('circle',{cx:PX(nid),cy:PY(nid),r:gh/2+10,fill:'none',stroke:col,'stroke-width':2,class:'svg-ripple-circ'});
+        rip.style.color=col;
+      }
+      const el=E('circle',{cx:PX(nid),cy:PY(nid),r:gh/2+4,fill:col?col+'35':(n.fill||'#101626'),stroke:col||n.stroke||'#26344d','stroke-width':col?2.6:1.4,class:col?'svg-node-hot':'svg-node'});
+      if(col)el.style.color=col;
+    } else {
+      if(col){
+        const rip=E('rect',{x:PX(nid)-gw/2-4,y:PY(nid)-gh/2-4,width:gw+8,height:gh+8,rx:8,fill:'none',stroke:col,'stroke-width':2,class:'svg-ripple-box'});
+        rip.style.color=col;
+      }
+      const el=E('rect',{x:PX(nid)-gw/2,y:PY(nid)-gh/2,width:gw,height:gh,rx:6,fill:col?col+'35':(n.fill||'#101626'),stroke:col||n.stroke||'#26344d','stroke-width':col?2.6:1.2,class:col?'svg-node-hot':'svg-node'});
+      if(col)el.style.color=col;
+    }
+    const t=TX(PX(nid),PY(nid)+4,n.v,'t'+(col?' t-hot':''));
+    if(col)t.style.fill='#ffffff';
     if(n.top!=null)TX(PX(nid),PY(nid)-gh/2-6,n.top,'m');
     if(n.sub!=null)TX(PX(nid),PY(nid)+gh/2+13,n.sub,'m');
   }
@@ -226,14 +1410,25 @@ graph(d,hl,y,id){
   (d.E||[]).forEach(e=>{
     const u=e[0],v=e[1],w=e[2];
     const hot=hl[id+':E'+u+'_'+v]||hl[id+':E'+v+'_'+u];
-    const c=hot?PC[hot]:'#5a5342';
-    if(u===v){E('circle',{cx:P[u].x,cy:P[u].y-22,r:11,fill:'none',stroke:c,'stroke-width':hot?2.2:1.3});return;}
-    LN(P[u].x,P[u].y,P[v].x,P[v].y,{c:c,w:hot?2.4:1.3,mk:d.dir?(hot?'arA':'arI'):null});
+    const c=hot?PC[hot]:'#26344d';
+    if(u===v){
+      const el=E('circle',{cx:P[u].x,cy:P[u].y-22,r:11,fill:'none',stroke:c,'stroke-width':hot?2.6:1.3});
+      if(hot){el.classList.add('svg-edge-hot');el.style.color=c;}
+      return;
+    }
+    const eline=LN(P[u].x,P[u].y,P[v].x,P[v].y,{c:c,w:hot?2.6:1.3,mk:d.dir?(hot?'arA':'arI'):null});
+    if(hot&&eline){eline.classList.add('svg-edge-hot');eline.style.color=c;}
     if(w!=null)TX((P[u].x+P[v].x)/2,(P[u].y+P[v].y)/2-6,w,'el');});
   for(let u=0;u<n;u++){
     const col=hl[id+':N'+u]?PC[hl[id+':N'+u]]:null;
-    E('circle',{cx:P[u].x,cy:P[u].y,r:17,fill:col?col+'22':'#211e17',stroke:col||'#5a5342','stroke-width':col?2.2:1.4});
-    TX(P[u].x,P[u].y+4,u,'t');
+    if(col){
+      const rip=E('circle',{cx:P[u].x,cy:P[u].y,r:26,fill:'none',stroke:col,'stroke-width':2,class:'svg-ripple-circ'});
+      rip.style.color=col;
+    }
+    const el=E('circle',{cx:P[u].x,cy:P[u].y,r:18,fill:col?col+'35':'#101626',stroke:col||'#26344d','stroke-width':col?2.6:1.4,class:col?'svg-node-hot':'svg-node'});
+    if(col)el.style.color=col;
+    const t=TX(P[u].x,P[u].y+4,u,'t'+(col?' t-hot':''));
+    if(col)t.style.fill='#ffffff';
     if(d.lab&&d.lab[u]!=null)TX(P[u].x,P[u].y+34,d.lab[u],'m');}
   if(d.p){let mx=0;d.p.forEach(q=>mx=Math.max(mx,q[1]));return mx+76;}
   return Math.min(150,54+n*11)*2+112;
@@ -247,30 +1442,32 @@ hash(d,hl,y,id){
     let x=160;
     (d.b[i]||[]).forEach((e,j)=>{
       const c2=hl[id+':c'+i+'_'+j]?PC[hl[id+':c'+i+'_'+j]]:null;
-      LN(x-18,yy+bh/2,x-3,yy+bh/2,{c:'#5a5342',w:1.2,mk:'arI'});
+      LN(x-18,yy+bh/2,x-3,yy+bh/2,{c:'#3b4a6b',w:1.4,mk:'arI'});
       cell(x,yy,92,bh,e.k+':'+fmt(e.v),c2,null);x+=104;});
     if(!(d.b[i]||[]).length)TX(180,yy+bh/2+4,'—','m');}
   return B*44+18;
 },
 ivl(d,hl,y,id){
   const M=d.max||20,x0=80,x1=880,sc=(x1-x0)/M;
-  LN(x0,y+30,x1,y+30,{c:'#4a4436',w:1.4});
+  LN(x0,y+30,x1,y+30,{c:'#26344d',w:1.4});
   for(let v=0;v<=M;v+=(M<=12?1:2))TX(x0+v*sc,y+52,v,'m');
   d.ivs.forEach((iv,i)=>{
     const col=hl[id+':'+i]?PC[hl[id+':'+i]]:null;
-    E('rect',{x:x0+iv[0]*sc,y:y+6,width:Math.max(4,(iv[1]-iv[0])*sc),height:22,rx:2,fill:col?col+'33':'#e0a33e18',stroke:col||'#b98f37','stroke-width':col?1.8:1.2});
-    TX(x0+(iv[0]+iv[1])/2*sc,y+22,'['+iv[0]+','+iv[1]+']','t');});
+    const r=E('rect',{x:x0+iv[0]*sc,y:y+6,width:Math.max(4,(iv[1]-iv[0])*sc),height:22,rx:4,fill:col?col+'33':'rgba(56, 189, 248, 0.12)',stroke:col||'#38bdf8','stroke-width':col?2:1.2,class:col?'svg-node-hot':'svg-node'});
+    if(col)r.style.color=col;
+    TX(x0+(iv[0]+iv[1])/2*sc,y+22,'['+iv[0]+','+iv[1]+']','t'+(col?' t-hot':''));});
   return 72;
 },
 pts(d,hl,y,id){
   const H=300,sx=v=>60+v*3,SY=v=>y+H-24-v*((H-48)/240);
   (d.rects||[]).forEach((r,i)=>{const col=hl[id+':r'+i]?PC[hl[id+':r'+i]]:null;
-    E('rect',{x:sx(r[0]),y:SY(r[3]),width:(r[2]-r[0])*3,height:(r[3]-r[1])*((H-48)/240),fill:col?col+'22':'#e0a33e10',stroke:col||'#5a5342','stroke-width':col?1.8:1});});
-  (d.vlines||[]).forEach(v=>LN(sx(v),y+8,sx(v),y+H-20,{c:'#39352b',dash:'5 5'}));
-  (d.hlines||[]).forEach(v=>LN(60,SY(v),900,SY(v),{c:'#39352b',dash:'5 5'}));
-  if(d.poly&&d.poly.length>1)for(let i=0;i<d.poly.length;i++){const a=d.poly[i],b=d.poly[(i+1)%d.poly.length];LN(sx(a[0]),SY(a[1]),sx(b[0]),SY(b[1]),{c:'#46b3a2',w:2});}
+    E('rect',{x:sx(r[0]),y:SY(r[3]),width:(r[2]-r[0])*3,height:(r[3]-r[1])*((H-48)/240),fill:col?col+'25':'rgba(99, 102, 241, 0.08)',stroke:col||'#26344d','stroke-width':col?2:1.2,rx:4,class:col?'svg-node-hot':''});});
+  (d.vlines||[]).forEach(v=>LN(sx(v),y+8,sx(v),y+H-20,{c:'rgba(255,255,255,0.08)',dash:'5 5'}));
+  (d.hlines||[]).forEach(v=>LN(60,SY(v),900,SY(v),{c:'rgba(255,255,255,0.08)',dash:'5 5'}));
+  if(d.poly&&d.poly.length>1)for(let i=0;i<d.poly.length;i++){const a=d.poly[i],b=d.poly[(i+1)%d.poly.length];LN(sx(a[0]),SY(a[1]),sx(b[0]),SY(b[1]),{c:'#2dd4bf',w:2.2});}
   (d.pts||[]).forEach((p,i)=>{const col=hl[id+':p'+i]?PC[hl[id+':p'+i]]:null;
-    E('circle',{cx:sx(p[0]),cy:SY(p[1]),r:5,fill:col||'#e0a33e'});
+    const el=E('circle',{cx:sx(p[0]),cy:SY(p[1]),r:col?7:5,fill:col||'#38bdf8',stroke:col?'#ffffff':'none','stroke-width':col?1.5:0,class:col?'svg-node-hot':''});
+    if(col)el.style.color=col;
     TX(sx(p[0])+9,SY(p[1])-7,'('+p[0]+','+p[1]+')','m');});
   return H;
 },
@@ -303,7 +1500,14 @@ const h=(k,c)=>({[k]:c});
 const h2=(a,b,c,d)=>({[a]:b,[c]:d});
 const h3=(a,b,c,d,e,f)=>({[a]:b,[c]:d,[e]:f});
 const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(toast._t);toast._t=setTimeout(()=>t.style.display='none',2600);}
+function toast(m){
+  const t=document.getElementById('toast');
+  const msg=document.getElementById('toastMsg')||t;
+  msg.textContent=m;
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t=setTimeout(()=>t.classList.remove('show'),2800);
+}
 /* part shorthands */
 const ROW=(id,d,lab)=>({e:'row',id:id,d:d,label:lab});
 const TREE=(id,d,lab)=>({e:'tree',id:id,d:d,label:lab});
@@ -720,10 +1924,11 @@ function listMake(vals,opts){
       if(i<0){tr(x.v+' not found after walking the whole list — O(n)');return;}
       tr('unlink node['+i+'] — predecessor now points past it',h('l:'+i,'bad'));
       D.L.splice(i,1);tr('removed; node returned to memory');},[prm('v','value','n',11)]),
-    op('reverse in place',()=>{const done=[];
-      while(D.L.length){const nd=D.L.shift();done.unshift(nd);
-        tr('rewire node('+nd.v+'): next = '+(done[1]?done[1].v:'null')+(D.L.length?' (was '+D.L[0].v+')':''),h('l:0','cur'));
-        D.L=done.concat(D.L);}
+    op('reverse in place',()=>{const orig=D.L.slice(),done=[];
+      while(orig.length){const nd=orig.shift();done.unshift(nd);
+        D.L=done.concat(orig);
+        tr('rewire node('+nd.v+'): next = '+(done[1]?done[1].v:'null'),h('l:0','cur'));}
+      D.L=done;
       tr('every pointer flipped in one pass — O(n), O(1) extra space');})]};
 }
 def('Linked Lists','Singly linked list','A chain of nodes, each pointing to the next. Head insertion is O(1); searching walks node by node.','O(1) head insert · O(n) search',()=>listMake([3,7,11,19]));
@@ -1420,26 +2625,26 @@ def('Binary Trees','Full binary tree','Every node has either 0 or 2 children —
       tr('leaves '+L+' = internal '+I+' + 1 — always, for full trees');})]};
 });
 def('Binary Trees','Perfect binary tree','All levels completely filled: node count 2^(h+1)−1, exactly half the nodes at the bottom level.','exact node counts',()=>{
-  let h=2;
+  let treeH=2;
   const build=()=>{const nd={};let nid=1,rt=null;
     (function go(pid,side,d){const id=nid++;nd[id]={v:d,kids:[]};
       if(pid)nd[pid].kids[side]=id;else rt=id;
-      if(d<h){go(id,0,d+1);go(id,1,d+1);}})(null,0,0);
+      if(d<treeH){go(id,0,d+1);go(id,1,d+1);}})(null,0,0);
     return{nd:nd,rt:rt,count:nid-1};};
   let cur=build();
   const TP=TREE('t',{nd:cur.nd,rt:cur.rt,gw:40,vgap:62});
   const TT=TXT('i',{t:''});
-  const st={parts:[TP,TT],sync:()=>{TT.d.t='height '+h+' · '+cur.count+' = 2^'+(h+1)+'−1 nodes';}};
+  const st={parts:[TP,TT],sync:()=>{TT.d.t='height '+treeH+' · '+cur.count+' = 2^'+(treeH+1)+'−1 nodes';}};
   st.ops=[
     op('count nodes per level',()=>{const lvl={};
       (function w(id,d){if(id==null||!cur.nd[id])return;
         lvl[d]=(lvl[d]||0)+1;tr('level '+d+': node '+cur.nd[id].v,h('t:'+id,'vis'));
         cur.nd[id].kids.forEach(k=>w(k,d+1));})(cur.rt,0);
       Object.keys(lvl).forEach(d2=>tr('level '+d2+' → '+lvl[d2]+' = 2^'+d2+' nodes ✓'));
-      tr('total '+cur.count+' = 2^'+(h+1)+'−1');}),
-    op('set height h',x=>{h=Math.max(0,Math.min(3,x.h|0));
+      tr('total '+cur.count+' = 2^'+(treeH+1)+'−1');}),
+    op('set height h',x=>{treeH=Math.max(0,Math.min(3,x.h|0));
       cur=build();TP.d.nd=cur.nd;TP.d.rt=cur.rt;
-      tr('rebuilt a perfect tree of height '+h);},[prm('h','height','n',3)])];
+      tr('rebuilt a perfect tree of height '+treeH);},[prm('h','height','n',3)])];
   return st;
 });
 def('Binary Trees','N-ary tree','Children come in lists, not pairs — the shape of file systems, DOM trees, org charts.','O(n) traversals',()=>{
@@ -1766,16 +2971,26 @@ def('Advanced Trees','Cartesian tree','A min-heap-shaped tree over an array whos
   function AR_row(){return ROW('a',AR,'input array');}
   st.parts=[AR_row(),TP];
   st.ops=[op('build (monotonic stack)',()=>{
-    const nd={},stk=[];let root=null,nid=1;
-    for(let i=0;i<a.length;i++){const v=a[i];let last=null;
-      while(stk.length&&a[stk[stk.length-1]]>v){last=stk.pop();
-        tr('pop index '+last+' (value '+a[last]+' > '+v+')',h('a:'+last,'vis'));}
-      const id=nid++;nd[id]={v:v,kids:[null,null]};
-      if(last!=null)nd[id].kids[0]=last;
-      if(stk.length)nd[stk[stk.length-1]].kids[1]=id;else root=id;
+    const nd={}, stk=[], left={}, right={};
+    for(let i=0;i<a.length;i++){
+      const v=a[i]; let last=null;
+      while(stk.length && a[stk[stk.length-1]] > v){
+        last=stk.pop();
+        tr('pop index '+last+' (value '+a[last]+' > '+v+')',h('a:'+last,'vis'));
+      }
+      if(last!=null) left[i]=last;
+      if(stk.length) right[stk[stk.length-1]]=i;
       stk.push(i);
-      tr('node '+v+' becomes the rightmost-spine child',h('a:'+i,'cur'));}
-    TP.d.nd=nd;TP.d.rt=root;
+      tr('node '+v+' pushed onto monotonic stack',h('a:'+i,'cur'));
+    }
+    const root = stk[0];
+    for(let i=0;i<a.length;i++){
+      const kids=[null, null];
+      if(left[i]!=null) kids[0]=String(left[i]);
+      if(right[i]!=null) kids[1]=String(right[i]);
+      nd[String(i)]={v:a[i],sub:i,kids:kids};
+    }
+    TP.d.nd=nd; TP.d.rt=String(root);
     tr('done: heap property top-down, array order left-to-right');})];
   return st;
 });
@@ -2959,7 +4174,7 @@ def('Specialized / Design','Bounded queue','A hard capacity with an eviction pol
     op('switch policy',x=>{pol=x.p;tr('policy = drop-'+pol);},[prm('p','policy','s','oldest',['oldest','newest'])])];
   return st;
 });
-def('Specialized / Design','Producer / consumer buffer','Two roles share a bounded buffer: producers wait when it is full, consumers when it is empty; each action steps the choreography.','bounded buffer · synchronized',()=>{
+def('Specialized / Design','Producer/consumer buffer','Two roles share a bounded buffer: producers wait when it is full, consumers when it is empty; each action steps the choreography.','bounded buffer · synchronized',()=>{
   const D={a:[1,2],cap:3,w:64};
   const hist=[];
   const st={parts:[ROW('b',D,'buffer occupancy over time →'),LOGI('l',{lines:[]},'timeline')],sync:()=>{
@@ -3150,22 +4365,22 @@ def('Mathematical / Implicit','Disjoint interval','Strict no-overlap policy: an 
 });
 def('Mathematical / Implicit','Priority queue of intervals','A min-heap keyed by interval end — the engine of "how many rooms do these meetings need?".','O(log n) per interval',()=>{
   const ivs=[[1,4],[2,5],[7,9],[5,8]];
-  const h=[];
-  const parts=[IVL('t',{ivs:ivs,max:12}),ROW('h',{a:h.map(x=>'end '+x),w:80},'heap keyed by end time')];
+  const hp=[];
+  const parts=[IVL('t',{ivs:ivs,max:12}),ROW('h',{a:hp.map(x=>'end '+x),w:80},'heap keyed by end time')];
   const st={parts:parts};
   st.ops=[op('meeting rooms needed',()=>{
-    h.length=0;
+    hp.length=0;
     const evs=ivs.map((iv,i)=>({iv:i,id:i})).sort((a,b)=>ivs[a.iv][0]-ivs[b.iv][0]);
     let rooms=0;
     for(const e of evs){const iv=ivs[e.iv];
-      if(h.length&&h[0]<=iv[0]){const fr=h.shift();
+      if(hp.length&&hp[0]<=iv[0]){const fr=hp.shift();
         tr('['+iv.join(',')+'] starts at '+iv[0]+' ≥ the earliest end '+fr+' → a room freed up, reuse it',h('t:'+e.id,'ok'));}
-      else tr('['+iv.join(',')+'] starts at '+iv[0]+' but the earliest end is '+(h[0]!==undefined?h[0]:'—')+' → another room needed',h('t:'+e.id,'bad'));
-      h.push(iv[1]);
-      let k=h.length-1;
-      while(k>0&&h[k]<h[(k-1)>>1]){const t=h[k];h[k]=h[(k-1)>>1];h[(k-1)>>1]=t;k=(k-1)>>1;}
-      rooms=Math.max(rooms,h.length);
-      tr('active meetings: '+h.length+' → rooms so far '+rooms);}
+      else tr('['+iv.join(',')+'] starts at '+iv[0]+' but the earliest end is '+(hp[0]!==undefined?hp[0]:'—')+' → another room needed',h('t:'+e.id,'bad'));
+      hp.push(iv[1]);
+      let k=hp.length-1;
+      while(k>0&&hp[k]<hp[(k-1)>>1]){const t=hp[k];hp[k]=hp[(k-1)>>1];hp[(k-1)>>1]=t;k=(k-1)>>1;}
+      rooms=Math.max(rooms,hp.length);
+      tr('active meetings: '+hp.length+' → rooms so far '+rooms);}
     tr('minimum rooms = '+rooms);})];
   return st;
 });
@@ -3486,12 +4701,12 @@ def('Misc / Hybrid','HyperLogLog','Approximate distinct-count in kilobytes: each
     const sum=D.a.reduce((s,r)=>s+Math.pow(2,-r),0);
     TT.d.t='estimate ≈ '+(0.7*64/sum>0?Math.round(0.7*64/sum):'…')+' distinct · true harmonic mean of 2^-r = '+sum.toFixed(3);}};
   st.ops=[
-    op('add(v)',x=>{const h=(x.v*2654435761)>>>0;
-      const b=h&7,w=(h>>>3)||1;
+    op('add(v)',x=>{const hv=(x.v*2654435761)>>>0;
+      const b=hv&7,w=(hv>>>3)||1;
       let zeros=0,bit=1;
       while(!(w&bit)&&zeros<29){bit<<=1;zeros++;}
       zeros++;
-      tr('hash('+x.v+') = '+h+' → bucket '+b+', leading zeros +1 = '+zeros);
+      tr('hash('+x.v+') = '+hv+' → bucket '+b+', leading zeros +1 = '+zeros);
       if(zeros>D.a[b]){D.a[b]=zeros;tr('register r'+b+' ↑ '+zeros,h('r:'+b,'ok'));}
       else tr('register r'+b+' stays '+D.a[b]+' (keep the max)');},[prm('v','value','n',42)])];
   return st;
@@ -3628,110 +4843,771 @@ def('Misc / Hybrid','Rope','A string stored as leaf chunks: edits split a chunk 
   return st;
 });
 /* ================= APP ================= */
-function buildCatalog(f){
-  const side=document.getElementById('side');
-  Array.from(side.querySelectorAll('.cat,.it')).forEach(e=>e.remove());
-  const cats={};
-  REG.forEach((d,i)=>{(cats[d.cat]=cats[d.cat]||[]).push([d,i]);});
-  document.getElementById('topcnt').textContent=REG.length+' structures';
-  for(const c in cats){
-    const items=cats[c].filter(x=>!f||x[0].name.toLowerCase().indexOf(f)>=0);
-    if(!items.length)continue;
-    const hd=document.createElement('div');hd.className='cat';
-    const sp=document.createElement('span');sp.textContent=c;
-    const sp2=document.createElement('span');sp2.textContent=items.length;
-    hd.appendChild(sp);hd.appendChild(sp2);side.appendChild(hd);
-    items.forEach(p=>{const el=document.createElement('div');el.className='it';
-      el.textContent=p[0].name;el.dataset.i=p[1];
-      el.onclick=()=>select(p[1]);side.appendChild(el);});}
+let ACTIVE_CAT = 'All';
+const COLLAPSED_CATS = new Set();
+
+function initCatBar() {
+  const bar = document.getElementById('catBar');
+  if (!bar) return;
+  bar.innerHTML = '';
+  const cats = ['All'];
+  REG.forEach(d => { if (!cats.includes(d.cat)) cats.push(d.cat); });
+  cats.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'cpill' + (c === ACTIVE_CAT ? ' active' : '');
+    btn.textContent = c;
+    btn.onclick = () => {
+      ACTIVE_CAT = c;
+      Array.from(bar.querySelectorAll('.cpill')).forEach(b => b.classList.toggle('active', b.textContent === c));
+      buildCatalog(document.getElementById('search').value.toLowerCase().trim());
+    };
+    bar.appendChild(btn);
+  });
 }
-function select(i){
-  stopPlay();CDEF=REG[i];
-  try{CUR=CDEF.make();}catch(e){toast('failed to init: '+(e&&e.message||e));CUR={parts:[],ops:[]};}
-  RUNS=[];
-  Array.from(document.querySelectorAll('.it')).forEach(e=>e.classList.toggle('on',+e.dataset.i===i));
-  document.getElementById('dsname').textContent=CDEF.name;
-  document.getElementById('dscat').textContent=CDEF.cat;
-  document.getElementById('dsblurb').textContent=CDEF.blurb;
-  document.getElementById('cxrow').innerHTML=(CDEF.cx||'').split(';').filter(x=>x)
-    .map(x=>'<span class="cx">'+x.trim()+'</span>').join('');
+
+function buildCatalog(f) {
+  const side = document.getElementById('sideContent') || document.getElementById('side');
+  side.innerHTML = '';
+  const clearBtn = document.getElementById('clearSearch');
+  if (clearBtn) clearBtn.style.display = f ? 'block' : 'none';
+  
+  const cats = {};
+  REG.forEach((d, i) => {
+    if (ACTIVE_CAT !== 'All' && d.cat !== ACTIVE_CAT) return;
+    (cats[d.cat] = cats[d.cat] || []).push([d, i]);
+  });
+  
+  let matchCount = 0;
+  for (const c in cats) {
+    const items = cats[c].filter(x => !f || x[0].name.toLowerCase().includes(f));
+    if (!items.length) continue;
+    matchCount += items.length;
+    
+    const isCollapsed = COLLAPSED_CATS.has(c) && !f;
+    const hd = document.createElement('div');
+    hd.className = 'cat' + (isCollapsed ? ' collapsed' : '');
+    hd.innerHTML = `<span class="cat-left"><span>${c}</span><span class="cat-badge">${items.length}</span></span><span class="cat-arrow">▾</span>`;
+    hd.onclick = () => {
+      if (COLLAPSED_CATS.has(c)) COLLAPSED_CATS.delete(c);
+      else COLLAPSED_CATS.add(c);
+      buildCatalog(document.getElementById('search').value.toLowerCase().trim());
+    };
+    side.appendChild(hd);
+    
+    if (!isCollapsed) {
+      const group = document.createElement('div');
+      group.className = 'it-group';
+      items.forEach(p => {
+        const el = document.createElement('div');
+        const isCurrent = CDEF && REG.indexOf(CDEF) === p[1];
+        el.className = 'it' + (isCurrent ? ' on' : '');
+        el.dataset.i = p[1];
+        el.innerHTML = `<span class="it-dot"></span><span class="it-label">${p[0].name}</span>`;
+        el.onclick = () => select(p[1]);
+        group.appendChild(el);
+      });
+      side.appendChild(group);
+    }
+  }
+  document.getElementById('topcnt').textContent = REG.length + ' structures';
+  if (matchCount === 0 && f) {
+    const empty = document.createElement('div');
+    empty.style.padding = '24px 14px';
+    empty.style.textAlign = 'center';
+    empty.style.color = 'var(--mut)';
+    empty.style.font = '12px "JetBrains Mono", monospace';
+    empty.textContent = 'No structures matching "' + f + '"';
+    side.appendChild(empty);
+  }
+}
+
+
+/* ================= ALGORITHM EXECUTION ENGINE ================= */
+let CURRENT_ALGO = null;
+
+const ALGO_REGISTRY = {
+  // Heap algorithms
+  'Binary min-heap:insert': {
+    name: 'Min-Heap Sift-Up (Bubble-Up)',
+    cx: 'Time: O(log n) · Space: O(1)',
+    invariant: 'Min-heap property: parent(i) <= node(i) for all valid nodes.',
+    code: [
+      'function insert(heap, val):',
+      '  heap.push(val) // place at next available leaf',
+      '  i = heap.length - 1',
+      '  while i > 0 and heap[i] < heap[parent(i)]:',
+      '    swap(heap[i], heap[parent(i)]) // restore min-heap order',
+      '    i = parent(i)',
+      '  return heap // min-heap invariant restored'
+    ]
+  },
+  'Binary min-heap:extract': {
+    name: 'Min-Heap Extract-Root (Sift-Down)',
+    cx: 'Time: O(log n) · Space: O(1)',
+    invariant: 'Root holds minimum element; children subtrees remain valid heaps.',
+    code: [
+      'function extractMin(heap):',
+      '  if heap.isEmpty(): return null',
+      '  minVal = heap[0] // root is guaranteed minimum',
+      '  heap[0] = heap.pop() // move last leaf to root',
+      '  siftDown(0, heap.length) // push root down to valid position',
+      '  return minVal'
+    ]
+  },
+  'Binary search tree (BST):search': {
+    name: 'BST Binary Search Traversal',
+    cx: 'Time: O(h) where h <= log n · Space: O(1)',
+    invariant: 'For every node x, all keys in left(x) < key(x) < all keys in right(x).',
+    code: [
+      'function search(root, target):',
+      '  curr = root',
+      '  while curr != null:',
+      '    if curr.val == target: return curr // match found',
+      '    if target < curr.val: curr = curr.left // branch left',
+      '    else: curr = curr.right // branch right',
+      '  return null // target not in tree'
+    ]
+  },
+  'Balanced BST (AVL):rebalance': {
+    name: 'AVL Tree Self-Balancing Rotation',
+    cx: 'Time: O(1) rotation · Space: O(1)',
+    invariant: 'Strict height balance: |height(left) - height(right)| <= 1 at every node.',
+    code: [
+      'function rebalance(node):',
+      '  balance = height(node.left) - height(node.right)',
+      '  if balance > 1 and height(node.left.left) >= height(node.left.right):',
+      '    return rotateRight(node) // Left-Left case',
+      '  if balance > 1 and height(node.left.right) > height(node.left.left):',
+      '    node.left = rotateLeft(node.left); return rotateRight(node) // Left-Right case',
+      '  if balance < -1 and height(node.right.right) >= height(node.right.left):',
+      '    return rotateLeft(node) // Right-Right case',
+      '  if balance < -1 and height(node.right.left) > height(node.right.right):',
+      '    node.right = rotateRight(node.right); return rotateLeft(node) // Right-Left case',
+      '  return node'
+    ]
+  },
+  'Disjoint Set Union (DSU):find': {
+    name: 'DSU Find with Path Compression',
+    cx: 'Time: O(α(n)) amortized · Space: O(1)',
+    invariant: 'Every node traversed along find path points directly to canonical root.',
+    code: [
+      'function find(x):',
+      '  if parent[x] != x:',
+      '    parent[x] = find(parent[x]) // Path compression link redirection',
+      '  return parent[x] // Canonical representative',
+      'function union(x, y):',
+      '  rootX = find(x); rootY = find(y)',
+      '  if rootX == rootY: return false // already in same set',
+      '  if rank[rootX] < rank[rootY]: swap(rootX, rootY)',
+      '  parent[rootY] = rootX // attach smaller tree under larger',
+      '  if rank[rootX] == rank[rootY]: rank[rootX] = rank[rootX] + 1',
+      '  return true'
+    ]
+  },
+  'LRU cache:access': {
+    name: 'LRU Cache Eviction & Hash-Map Splicing',
+    cx: 'Time: O(1) get & put · Space: O(capacity)',
+    invariant: 'Head stores most recently used node; tail stores least recently used node.',
+    code: [
+      'function put(key, value):',
+      '  if key in map:',
+      '    node = map[key]; node.value = value; moveToHead(node)',
+      '  else:',
+      '    if map.size >= capacity:',
+      '      lruNode = tail.prev; removeNode(lruNode); map.delete(lruNode.key)',
+      '    newNode = new Node(key, value); map[key] = newNode; addHead(newNode)',
+      '  return value'
+    ]
+  },
+  'Bloom filter:test': {
+    name: 'Bloom Filter k-Hash Bit Set & Query',
+    cx: 'Time: O(k) · Space: O(m) bit array',
+    invariant: 'False positives possible; false negatives impossible: if any bit is 0, item definitely absent.',
+    code: [
+      'function add(item):',
+      '  for i from 1 to k:',
+      '    bitIndex = hash_i(item) % m',
+      '    bitArray[bitIndex] = 1',
+      'function contains(item):',
+      '  for i from 1 to k:',
+      '    bitIndex = hash_i(item) % m',
+      '    if bitArray[bitIndex] == 0: return false // definitely absent',
+      '  return true // probably present'
+    ]
+  }
+};
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function highlightPseudocode(line) {
+  let text = line;
+  const commentIdx = text.indexOf('//');
+  let comment = '';
+  if (commentIdx !== -1) {
+    comment = '<span class="cm">' + escapeHtml(text.slice(commentIdx)) + '</span>';
+    text = text.slice(0, commentIdx);
+  }
+  
+  text = escapeHtml(text);
+  text = text.replace(/\b(function|def|while|for|if|else|return|break|let|const|var|new|each|in|and|or|not)\b/g, '<span class="kw">$1</span>');
+  text = text.replace(/\b(true|false|null|undefined)\b/g, '<span class="ty">$1</span>');
+  text = text.replace(/\b(\d+)\b/g, '<span class="num">$1</span>');
+  text = text.replace(/\b([a-zA-Z_]\w*)\s*\(/g, '<span class="fn">$1</span>(');
+
+  return text + comment;
+}
+
+function synthesizeAlgorithm(dsName, catName, opLabel, dsBlurb, dsCx) {
+  const op = (opLabel || '').toLowerCase();
+  const ds = (dsName || '').toLowerCase();
+  const cat = (catName || '').toLowerCase();
+
+  let algoName = dsName + ': ' + (opLabel || 'Algorithm Workflow');
+  let cx = dsCx ? dsCx.split(';')[0].trim() : 'Time: O(1) · Space: O(1)';
+  let invariant = dsBlurb || ('Maintains ' + dsName + ' data structure invariants.');
+  let code = [];
+
+  if (op.includes('insert') || op.includes('push') || op.includes('add') || op.includes('enqueue') || op.includes('put') || op.includes('append')) {
+    algoName = dsName + ': Insertion & State Update';
+    code = [
+      'function insert(structure, value):',
+      '  validate capacity or allocate node for value',
+      '  locate insertion position (tail / index / binary path)',
+      '  link or place value into structure',
+      '  update size and rebalance / restore invariants if necessary',
+      '  return true // state updated'
+    ];
+  } else if (op.includes('extract') || op.includes('delete') || op.includes('pop') || op.includes('remove') || op.includes('dequeue') || op.includes('poll')) {
+    algoName = dsName + ': Deletion & Extraction';
+    code = [
+      'function remove(structure, target):',
+      '  if structure.isEmpty(): return error/null',
+      '  locate element to remove or extract root/head',
+      '  unlink node or shift remaining elements',
+      '  decrement size and rebalance / restore invariants',
+      '  return removedElement'
+    ];
+  } else if (op.includes('search') || op.includes('find') || op.includes('get') || op.includes('lookup') || op.includes('query') || op.includes('contains')) {
+    algoName = dsName + ': Search / Query Traversal';
+    code = [
+      'function search(structure, target):',
+      '  curr = initialize pointer or probe index',
+      '  while curr is valid and not matched:',
+      '    compare curr.value with target',
+      '    advance pointer or branch left/right / probe next',
+      '  if matched: return curr // found target',
+      '  return notFound // target absent'
+    ];
+  } else if (op.includes('reverse') || op.includes('flip') || op.includes('invert')) {
+    algoName = dsName + ': In-Place Reversal Algorithm';
+    code = [
+      'function reverse(structure):',
+      '  prev = null, curr = head, next = null',
+      '  while curr != null:',
+      '    next = curr.next // stash forward link',
+      '    curr.next = prev // reverse pointer',
+      '    prev = curr; curr = next // advance pointers',
+      '  return prev // new head'
+    ];
+  } else if (op.includes('sort') || op.includes('build') || op.includes('heapify') || op.includes('rebalance') || op.includes('rotate') || op.includes('sift')) {
+    algoName = dsName + ': Structural Rebalance & Organization';
+    code = [
+      'function reorganize(structure):',
+      '  scan elements or inspect parent-child violations',
+      '  identify pivot or boundary index',
+      '  apply local rotation, sift, or partition step',
+      '  recursively ensure subtree/range invariants satisfy rules',
+      '  return structure // balanced'
+    ];
+  } else if (cat.includes('graph')) {
+    algoName = dsName + ': Graph Traversal & Pathfinding';
+    code = [
+      'function exploreGraph(graph, start):',
+      '  visited = new Set([start]), frontier = [start]',
+      '  while frontier is not empty:',
+      '    u = frontier.dequeue() or pop()',
+      '    for each neighbor v of u:',
+      '      if v not in visited:',
+      '        visited.add(v); record edge (u, v)',
+      '        frontier.push(v)',
+      '  return visited // traversal complete'
+    ];
+  } else {
+    algoName = dsName + ': ' + (opLabel || 'Operation Workflow');
+    code = [
+      'function execute' + (opLabel ? opLabel.replace(/[^a-zA-Z0-9]/g, '') : '') + '(structure, input):',
+      '  verify input preconditions against current state',
+      '  inspect target node(s) or memory slot(s)',
+      '  execute structural mutation or state transition',
+      '  verify data structure post-conditions',
+      '  return updated state'
+    ];
+  }
+
+  return { name: algoName, cx: cx, invariant: invariant, code: code };
+}
+
+function getAlgorithmFor(cdef, op, runs) {
+  if (!cdef) return null;
+  const opLabel = op ? op.label : '';
+  const opKey = cdef.name + ':' + opLabel;
+  if (ALGO_REGISTRY[opKey]) return ALGO_REGISTRY[opKey];
+  
+  // Try partial op name match
+  for (const k in ALGO_REGISTRY) {
+    if (k.startsWith(cdef.name + ':')) {
+      const sub = k.split(':')[1];
+      if (opLabel.toLowerCase().includes(sub.toLowerCase())) {
+        return ALGO_REGISTRY[k];
+      }
+    }
+  }
+  
+  return synthesizeAlgorithm(cdef.name, cdef.cat, opLabel, cdef.blurb, cdef.cx);
+}
+
+function renderAlgorithmPane(algo) {
+  if (!algo) return;
+  const titleEl = document.getElementById('algoTitle');
+  const cxEl = document.getElementById('algoComplexity');
+  const invEl = document.getElementById('algoInvariant');
+  const codeEl = document.getElementById('algoCode');
+  const hudName = document.getElementById('hudAlgoName');
+  const hudCx = document.getElementById('hudComplexity');
+
+  if (titleEl) titleEl.textContent = algo.name;
+  if (hudName) hudName.textContent = algo.name;
+  if (cxEl) cxEl.textContent = algo.cx;
+  if (hudCx) hudCx.textContent = algo.cx;
+  if (invEl) invEl.textContent = algo.invariant;
+
+  if (codeEl) {
+    codeEl.innerHTML = '';
+    (algo.code || []).forEach((line, idx) => {
+      const lineDiv = document.createElement('div');
+      lineDiv.className = 'algo-line' + (idx === 0 ? ' active' : '');
+      lineDiv.dataset.line = idx;
+      
+      const lnSpan = document.createElement('span');
+      lnSpan.className = 'algo-ln';
+      lnSpan.textContent = String(idx + 1).padStart(2, '0');
+      
+      const arrowSpan = document.createElement('span');
+      arrowSpan.className = 'algo-arrow';
+      arrowSpan.textContent = '►';
+      
+      const txtSpan = document.createElement('span');
+      txtSpan.className = 'algo-txt';
+      txtSpan.innerHTML = highlightPseudocode(line);
+      
+      lineDiv.appendChild(lnSpan);
+      lineDiv.appendChild(arrowSpan);
+      lineDiv.appendChild(txtSpan);
+      
+      lineDiv.onclick = () => {
+        // Find first step that matches this line
+        const stepIdx = STEPS.findIndex((s, si) => matchStepToLine(algo, s, si, STEPS.length) === idx);
+        if (stepIdx !== -1) {
+          stopPlay();
+          goto(stepIdx);
+        }
+      };
+      
+      codeEl.appendChild(lineDiv);
+    });
+  }
+
+  // Update HUD Initial Line
+  const hudLineNum = document.getElementById('hudLineNum');
+  const hudCodeLine = document.getElementById('hudCodeLine');
+  if (hudLineNum) hudLineNum.textContent = 'L01';
+  if (hudCodeLine && algo.code && algo.code[0]) {
+    hudCodeLine.textContent = algo.code[0];
+  }
+}
+
+function matchStepToLine(algo, step, stepIdx, totalSteps) {
+  if (!algo || !algo.code || !algo.code.length) return 0;
+  if (step && step.line != null) return Math.max(0, Math.min(algo.code.length - 1, step.line));
+  
+  const note = (step && step.note || '').toLowerCase();
+  if (stepIdx === 0 || note.includes('initial state')) return 0;
+  if (note.includes('done') || note.includes('finish') || note.includes('complete') || note.includes('restored') || note.includes('found')) {
+    return algo.code.length - 1;
+  }
+
+  for (let l = 0; l < algo.code.length; l++) {
+    const line = algo.code[l].toLowerCase();
+    if (note.includes('swap') && line.includes('swap')) return l;
+    if ((note.includes('compare') || note.includes('cmp') || note.includes('check') || note.includes('less') || note.includes('greater')) &&
+        (line.includes('if') || line.includes('while') || line.includes('compare') || line.includes('balance'))) return l;
+    if ((note.includes('push') || note.includes('insert') || note.includes('add') || note.includes('append')) &&
+        (line.includes('push') || line.includes('insert') || line.includes('append') || line.includes('add'))) return l;
+    if ((note.includes('pop') || note.includes('extract') || note.includes('delete') || note.includes('remove')) &&
+        (line.includes('pop') || line.includes('extract') || line.includes('delete') || line.includes('remove'))) return l;
+    if ((note.includes('rotate') || note.includes('pivot') || note.includes('rebalance')) &&
+        (line.includes('rotate') || line.includes('rebalance') || line.includes('pivot'))) return l;
+  }
+
+  if (totalSteps > 1) {
+    const frac = stepIdx / (totalSteps - 1);
+    const midIdx = 1 + Math.floor(frac * (algo.code.length - 2));
+    return Math.max(0, Math.min(algo.code.length - 1, midIdx));
+  }
+  return 0;
+}
+
+function updateStepAlgorithmLine(stepIdx) {
+  if (!CURRENT_ALGO || !STEPS || !STEPS[stepIdx]) return;
+  const lineIdx = matchStepToLine(CURRENT_ALGO, STEPS[stepIdx], stepIdx, STEPS.length);
+  
+  const lineEls = document.querySelectorAll('#algoCode .algo-line');
+  lineEls.forEach((el, idx) => {
+    el.classList.toggle('active', idx === lineIdx);
+    if (idx === lineIdx) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  });
+
+  const hudLineNum = document.getElementById('hudLineNum');
+  const hudCodeLine = document.getElementById('hudCodeLine');
+  if (hudLineNum) hudLineNum.textContent = 'L' + String(lineIdx + 1).padStart(2, '0');
+  if (hudCodeLine && CURRENT_ALGO.code && CURRENT_ALGO.code[lineIdx]) {
+    hudCodeLine.textContent = CURRENT_ALGO.code[lineIdx];
+  }
+
+  const commText = document.getElementById('algoCommentaryText');
+  if (commText) {
+    commText.textContent = 'Step #' + String(stepIdx + 1).padStart(2, '0') + ': ' + STEPS[stepIdx].note;
+  }
+}
+
+// Setup Trace Tabs
+(function initTraceTabs() {
+  const tabs = document.querySelectorAll('#traceTabs .tr-tab');
+  const traceEl = document.getElementById('trace');
+  tabs.forEach(t => {
+    t.addEventListener('click', () => {
+      tabs.forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      const mode = t.dataset.tab;
+      if (traceEl) {
+        traceEl.classList.remove('mode-split', 'mode-algo', 'mode-steps');
+        traceEl.classList.add('mode-' + mode);
+      }
+    });
+  });
+})();
+
+function select(i) {
+  stopPlay();
+  CDEF = REG[i];
+  try {
+    CUR = CDEF.make();
+  } catch(e) {
+    toast('failed to init: ' + (e && e.message || e));
+    CUR = { parts: [], ops: [] };
+  }
+  RUNS = [];
+  Array.from(document.querySelectorAll('.it')).forEach(e => e.classList.toggle('on', +e.dataset.i === i));
+  
+  const midHeader = document.querySelector('.mid-header');
+  if (midHeader) {
+    midHeader.style.animation = 'none';
+    midHeader.offsetHeight; /* trigger reflow */
+    midHeader.style.animation = 'enterFade 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+  }
+  
+  document.getElementById('dsname').textContent = CDEF.name;
+  document.getElementById('dscat').textContent = CDEF.cat;
+  document.getElementById('dsblurb').textContent = CDEF.blurb;
+  document.getElementById('cxrow').innerHTML = (CDEF.cx || '').split(';').filter(x => x.trim())
+    .map(x => '<span class="cx">' + x.trim() + '</span>').join('');
+    
   buildOps();
-  STEPS=[{note:'initial state',hl:{},s:snap()}];
-  renderTrace();goto(0);setStatus(CDEF.name+' · ready');
+  CURRENT_ALGO = getAlgorithmFor(CDEF, null, null);
+  renderAlgorithmPane(CURRENT_ALGO);
+  if (CUR.sync) CUR.sync();
+  STEPS = [{ note: 'initial state', hl: {}, s: snap() }];
+  renderTrace();
+  goto(0);
+  setStatus(CDEF.name + ' · ready', false);
 }
-function buildOps(){
-  const bar=document.getElementById('opsbar');bar.innerHTML='';
-  (CUR.ops||[]).forEach((o,oi)=>{
-    const c=document.createElement('div');c.className='opc';
-    const l=document.createElement('span');l.className='lbl';l.textContent=o.label;c.appendChild(l);
-    (o.params||[]).forEach(p=>{
+
+function buildOps() {
+  const bar = document.getElementById('opsbar');
+  bar.innerHTML = '';
+  (CUR.ops || []).forEach((o, oi) => {
+    const c = document.createElement('div');
+    c.className = 'opc';
+    const l = document.createElement('span');
+    l.className = 'lbl';
+    l.textContent = o.label;
+    c.appendChild(l);
+    (o.params || []).forEach(p => {
       let inp;
-      if(p.type==='s'){inp=document.createElement('select');
-        (p.opts||[]).forEach(v=>{const o2=document.createElement('option');o2.value=v;o2.textContent=v;inp.appendChild(o2);});}
-      else{inp=document.createElement('input');inp.type=p.type==='n'?'number':'text';}
-      inp.id='p'+oi+'_'+p.k;
-      inp.value=(PM[oi+'_'+p.k]!=null?PM[oi+'_'+p.k]:p.def);
+      if (p.type === 's') {
+        inp = document.createElement('select');
+        (p.opts || []).forEach(v => {
+          const o2 = document.createElement('option');
+          o2.value = v;
+          o2.textContent = v;
+          inp.appendChild(o2);
+        });
+      } else {
+        inp = document.createElement('input');
+        inp.type = p.type === 'n' ? 'number' : 'text';
+      }
+      inp.id = 'p' + oi + '_' + p.k;
+      inp.value = (PM[oi + '_' + p.k] != null ? PM[oi + '_' + p.k] : p.def);
       c.appendChild(inp);
-      const pl=document.createElement('span');pl.className='pl';pl.textContent=p.label;c.appendChild(pl);});
-    const b=document.createElement('button');b.className='runb';b.textContent='run';
-    b.onclick=()=>{const args={};let bad=false;
-      (o.params||[]).forEach(p=>{const el=document.getElementById('p'+oi+'_'+p.k);
-        let v=el?el.value:p.def;
-        if(p.type==='n'){v=+v;if(isNaN(v))bad=true;}
-        PM[oi+'_'+p.k]=v;args[p.k]=v;});
-      if(bad){toast('numeric input required');return;}
-      runOp(o,args);};
-    c.appendChild(b);bar.appendChild(c);});
-  const g=document.createElement('div');g.className='glob';
-  if(CUR.example){const e=document.createElement('button');e.className='gb';e.textContent='load example';
-    e.onclick=()=>{stopPlay();RUNS=[];try{CUR.example();}catch(err){}
-      STEPS=RUNS.length?RUNS:[{note:'example data loaded',hl:{},s:snap()}];
-      renderTrace();goto(STEPS.length-1);};
-    g.appendChild(e);}
-  const r=document.createElement('button');r.className='gb';r.textContent='reset';
-  r.onclick=()=>select(REG.indexOf(CDEF));g.appendChild(r);
+      const pl = document.createElement('span');
+      pl.className = 'pl';
+      pl.textContent = p.label;
+      c.appendChild(pl);
+    });
+    const b = document.createElement('button');
+    b.className = 'runb';
+    b.innerHTML = '<span>run</span> <span style="font-size:10px">▶</span>';
+    b.onclick = () => {
+      const args = {};
+      let bad = false;
+      (o.params || []).forEach(p => {
+        const el = document.getElementById('p' + oi + '_' + p.k);
+        let v = el ? el.value : p.def;
+        if (p.type === 'n') { v = +v; if (isNaN(v)) bad = true; }
+        PM[oi + '_' + p.k] = v;
+        args[p.k] = v;
+      });
+      if (bad) { toast('numeric input required'); return; }
+      runOp(o, args);
+    };
+    c.appendChild(b);
+    bar.appendChild(c);
+  });
+  
+  const g = document.createElement('div');
+  g.className = 'glob';
+  const e = document.createElement('button');
+  e.className = 'gb gb-example';
+  e.innerHTML = '<span>⚡</span> <span>Load Example</span>';
+  e.onclick = () => loadExample();
+  g.appendChild(e);
+
+  const r = document.createElement('button');
+  r.className = 'gb';
+  r.innerHTML = '<span>↺</span> <span>Reset</span>';
+  r.onclick = () => select(REG.indexOf(CDEF));
+  g.appendChild(r);
   bar.appendChild(g);
 }
-function runOp(o,args){
-  stopPlay();RUNS=[];
-  try{o.run(args);}catch(err){toast('error: '+(err&&err.message||err));}
-  if(!RUNS.length)RUNS.push({note:'(no state change)',hl:{},s:snap()});
-  STEPS=RUNS;renderTrace();
-  setStatus(CDEF.name+' · '+o.label+' · '+RUNS.length+' steps');
-  const spd=+document.getElementById('spd').value;
-  if(spd===0)goto(STEPS.length-1);else play();
+
+function loadExample() {
+  stopPlay();
+  try {
+    CUR = CDEF.make();
+  } catch(err) {
+    CUR = { parts: [], ops: [] };
+  }
+  RUNS = [];
+  
+  if (typeof CUR.example === 'function') {
+    try {
+      CUR.example();
+    } catch(err) {
+      console.warn('Custom example err:', err);
+    }
+  }
+  
+  if (!RUNS.length && CUR.ops && CUR.ops.length) {
+    tr('Initial empty state loaded', {});
+    const opsToRun = CUR.ops.slice(0, Math.min(3, CUR.ops.length));
+    opsToRun.forEach(op => {
+      const args = {};
+      (op.params || []).forEach(p => {
+        args[p.k] = p.def;
+      });
+      try {
+        op.run(args);
+      } catch(e) {}
+    });
+  }
+  
+  if (!RUNS.length) {
+    RUNS.push({ note: CDEF.name + ' example initialized', hl: {}, s: snap() });
+  }
+  
+  STEPS = RUNS;
+  CURRENT_ALGO = getAlgorithmFor(CDEF, { label: 'Example Walkthrough' }, RUNS);
+  renderAlgorithmPane(CURRENT_ALGO);
+  renderTrace();
+  goto(0);
+  setStatus(CDEF.name + ' · playing example (' + STEPS.length + ' steps)', true);
+  toast('⚡ Example loaded (' + STEPS.length + ' steps) — playing demonstration');
+  play();
 }
-function renderTrace(){
-  const ol=document.getElementById('steps');ol.innerHTML='';
-  STEPS.forEach((s,i)=>{
-    const li=document.createElement('li');li.className='step';
-    const b=document.createElement('b');b.textContent=i;
-    const sp=document.createElement('span');sp.textContent=s.note;
-    li.appendChild(b);li.appendChild(sp);
-    li.onclick=()=>{stopPlay();goto(i);};ol.appendChild(li);});
-  document.getElementById('scrub').max=Math.max(0,STEPS.length-1);
+
+function runOp(o, args) {
+  stopPlay();
+  RUNS = [];
+  const wrap = document.getElementById('stage-wrap');
+  if (wrap) {
+    wrap.classList.add('active-op');
+    setTimeout(() => wrap.classList.remove('active-op'), 450);
+  }
+  try { o.run(args); } catch(err) { toast('error: ' + (err && err.message || err)); }
+  if (!RUNS.length) RUNS.push({ note: '(no state change)', hl: {}, s: snap() });
+  STEPS = RUNS;
+  CURRENT_ALGO = getAlgorithmFor(CDEF, o, RUNS);
+  renderAlgorithmPane(CURRENT_ALGO);
+  renderTrace();
+  setStatus(CDEF.name + ' · ' + o.label + ' (' + RUNS.length + ' steps)', true);
+  const spd = +document.getElementById('spd').value;
+  if (spd === 0) { goto(STEPS.length - 1); setStatus(CDEF.name + ' · done', false); }
+  else play();
 }
-function goto(i){
-  SI=Math.max(0,Math.min(STEPS.length-1,i));
-  const s=STEPS[SI];
-  render(s.s,s.hl);
-  Array.from(document.querySelectorAll('.step')).forEach((e,j)=>e.classList.toggle('on',j===SI));
-  document.getElementById('scrub').value=SI;
+
+function renderTrace() {
+  const ol = document.getElementById('steps');
+  ol.innerHTML = '';
+  STEPS.forEach((s, i) => {
+    const li = document.createElement('li');
+    li.className = 'step';
+    const b = document.createElement('b');
+    b.textContent = '#' + String(i).padStart(2, '0');
+    const sp = document.createElement('span');
+    sp.textContent = s.note;
+    li.appendChild(b);
+    li.appendChild(sp);
+    li.onclick = () => { stopPlay(); goto(i); };
+    ol.appendChild(li);
+  });
+  const scrub = document.getElementById('scrub');
+  scrub.max = Math.max(0, STEPS.length - 1);
+  const counter = document.getElementById('trCounter');
+  if (counter) counter.textContent = (SI >= 0 ? SI + 1 : 0) + ' / ' + STEPS.length;
 }
-function play(){stopPlay();
-  const spd=+document.getElementById('spd').value||520;
-  timer=setInterval(()=>{if(SI>=STEPS.length-1){stopPlay();return;}goto(SI+1);},spd);}
-function stopPlay(){if(timer){clearInterval(timer);timer=null;}}
-function setStatus(m){document.getElementById('status').textContent=m;}
-document.getElementById('bplay').onclick=()=>{if(timer)stopPlay();else{if(SI>=STEPS.length-1)goto(0);play();}};
-document.getElementById('bnext').onclick=()=>{stopPlay();goto(SI+1);};
-document.getElementById('bprev').onclick=()=>{stopPlay();goto(SI-1);};
-document.getElementById('scrub').oninput=e=>{stopPlay();goto(+e.target.value);};
-document.getElementById('search').addEventListener('input',e=>buildCatalog(e.target.value.toLowerCase().trim()));
-document.addEventListener('keydown',e=>{
-  if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
-  if(e.key==='ArrowRight'){stopPlay();goto(SI+1);}
-  if(e.key==='ArrowLeft'){stopPlay();goto(SI-1);}});
+
+function goto(i) {
+  SI = Math.max(0, Math.min(STEPS.length - 1, i));
+  const s = STEPS[SI];
+  render(s.s, s.hl);
+  const stepEls = document.querySelectorAll('.step');
+  stepEls.forEach((e, j) => e.classList.toggle('on', j === SI));
+  if (stepEls[SI]) {
+    stepEls[SI].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  document.getElementById('scrub').value = SI;
+  const counter = document.getElementById('trCounter');
+  if (counter) counter.textContent = (SI + 1) + ' / ' + STEPS.length;
+  updateStepAlgorithmLine(SI);
+}
+
+function play() {
+  stopPlay();
+  const btn = document.getElementById('bplay');
+  if (btn) {
+    btn.textContent = '❚❚';
+    btn.classList.add('playing');
+  }
+  const wrap = document.getElementById('stage-wrap');
+  if (wrap) wrap.classList.add('playing');
+  
+  const spd = +document.getElementById('spd').value || 420;
+  timer = setInterval(() => {
+    if (SI >= STEPS.length - 1) {
+      stopPlay();
+      setStatus(CDEF.name + ' · execution finished', false);
+      return;
+    }
+    goto(SI + 1);
+  }, spd);
+}
+
+function stopPlay() {
+  if (timer) {
+    clearInterval(timer);
+    timer = null;
+  }
+  const btn = document.getElementById('bplay');
+  if (btn) {
+    btn.textContent = '▶';
+    btn.classList.remove('playing');
+  }
+  const wrap = document.getElementById('stage-wrap');
+  if (wrap) wrap.classList.remove('playing');
+}
+
+function setStatus(m, busy) {
+  const el = document.getElementById('statusText');
+  if (el) el.textContent = m;
+  const dot = document.querySelector('.status-dot');
+  if (dot) dot.classList.toggle('busy', !!busy);
+}
+
+document.getElementById('bplay').onclick = () => {
+  if (timer) stopPlay();
+  else {
+    if (SI >= STEPS.length - 1) goto(0);
+    play();
+  }
+};
+document.getElementById('bnext').onclick = () => { stopPlay(); goto(SI + 1); };
+document.getElementById('bprev').onclick = () => { stopPlay(); goto(SI - 1); };
+document.getElementById('scrub').oninput = e => { stopPlay(); goto(+e.target.value); };
+
+const searchInp = document.getElementById('search');
+searchInp.addEventListener('input', e => buildCatalog(e.target.value.toLowerCase().trim()));
+
+const clearBtn = document.getElementById('clearSearch');
+if (clearBtn) {
+  clearBtn.onclick = () => {
+    searchInp.value = '';
+    buildCatalog('');
+    searchInp.focus();
+  };
+}
+
+document.getElementById('btnSurprise').onclick = () => {
+  stopPlay();
+  const randIdx = Math.floor(Math.random() * REG.length);
+  ACTIVE_CAT = 'All';
+  Array.from(document.querySelectorAll('.cpill')).forEach(b => b.classList.toggle('active', b.textContent === 'All'));
+  buildCatalog('');
+  select(randIdx);
+  setTimeout(() => {
+    const el = document.querySelector(`.it[data-i="${randIdx}"]`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 120);
+};
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
+    if (e.key === 'Escape') {
+      e.target.blur();
+      if (searchInp.value) { searchInp.value = ''; buildCatalog(''); }
+    }
+    return;
+  }
+  if (e.key === '/') {
+    e.preventDefault();
+    searchInp.focus();
+    searchInp.select();
+  } else if (e.key === ' ' || e.code === 'Space') {
+    e.preventDefault();
+    document.getElementById('bplay').click();
+  } else if (e.key === 'ArrowRight') {
+    stopPlay();
+    goto(SI + 1);
+  } else if (e.key === 'ArrowLeft') {
+    stopPlay();
+    goto(SI - 1);
+  }
+});
+
+initCatBar();
 buildCatalog('');
 select(0);
 </script>
